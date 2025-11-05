@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>🛒 我的購物車</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+</head>
+
+<body class="bg-light">
+	<div class="container mt-5">
+		<h2 class="mb-4 text-center">🛍️ 我的購物車</h2>
+
+		<div th:if="${#lists.isEmpty(cartItems)}"
+			class="alert alert-warning text-center">
+			😢 購物車目前沒有商品喔～ <a th:href="@{/products/home}"
+				class="btn btn-outline-primary btn-sm ms-2">🏬 回去逛逛</a>
+		</div>
+
+		<div th:if="${!#lists.isEmpty(cartItems)}">
+			<table
+				class="table table-bordered text-center align-middle shadow-sm bg-white">
+				<thead class="table-dark">
+					<tr>
+						<th>🖼️ 圖片</th>
+						<th>📦 商品名稱</th>
+						<th>🔢 數量</th>
+						<th>💰 單價</th>
+						<th>📊 小計</th>
+						<th>🧹 操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item : ${cartItems}">
+						<!-- 商品圖片 -->
+						<td><img th:src="@{'/uploads/' + ${item.product.prod_image}}"
+							alt="商品圖片" class="rounded shadow-sm"
+							style="width: 80px; height: 80px;"></td>
+
+						<!-- 商品名稱 -->
+						<td th:text="${item.product.prod_name}">商品名稱</td>
+
+						<!-- 數量修改 -->
+						<td>
+							<form th:action="@{'/cart/update/' + ${item.product.id}}"
+								method="post" class="d-flex justify-content-center">
+								<input type="number" name="quantity" th:value="${item.quantity}"
+									min="1" class="form-control w-50 me-2 text-center" />
+								<button type="submit" class="btn btn-sm btn-outline-primary">🔄
+									更新</button>
+							</form>
+						</td>
+
+						<!-- 單價 -->
+						<td th:text="${item.product.prod_price} + ' 元'">單價</td>
+
+						<!-- 小計（用 BigDecimal.multiply） -->
+						<td
+							th:text="${item.product.prod_price != null ? item.product.prod_price.multiply(T(java.math.BigDecimal).valueOf(#numbers.formatInteger(item.quantity))) : 0} + ' 元'">
+							小計</td>
+
+						<!-- 移除 -->
+						<td><a th:text="'刪除 ' + ${item.product.id}"
+							th:href="@{'/cart/remove/' + ${item.product.id}}"
+							class="btn btn-danger btn-sm">🗑️</a></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<!-- 底部操作 -->
+			<div class="d-flex justify-content-between align-items-center mt-4">
+				<div>
+					<a class="btn btn-outline-secondary me-2"
+						th:href="@{/products/home}">🏬 繼續購物</a> <a
+						class="btn btn-outline-danger" th:href="@{/cart/clear}">🧹
+						清空購物車</a>
+				</div>
+				<div class="text-end">
+					<h4>
+						💵 總金額： <span class="text-danger fw-bold"
+							th:text="${total} + ' 元'">0 元</span>
+					</h4>
+					<a class="btn btn-success mt-2" th:href="@{/checkout}">💳 結帳去！</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Bootstrap JS -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

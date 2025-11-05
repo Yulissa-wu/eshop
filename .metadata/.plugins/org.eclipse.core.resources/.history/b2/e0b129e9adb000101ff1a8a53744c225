@@ -1,0 +1,372 @@
+-- =============================================
+-- 電商商品管理系統資料庫結構
+-- 創建時間: 2024
+-- 功能: 用戶管理、商品管理、分類管理
+-- =============================================
+
+-- 創建資料庫
+CREATE DATABASE IF NOT EXISTS ecommerce_db 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+-- 使用資料庫
+USE ecommerce_db;
+
+-- =============================================
+-- 用戶表 (users)
+-- 功能: 存儲用戶註冊登錄資訊
+-- =============================================
+CREATE TABLE users (
+    -- 主鍵，自動遞增
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    
+    -- 用戶名，唯一且不能為空
+    username VARCHAR(50) NOT NULL UNIQUE,
+    
+    -- 電子郵件，唯一且不能為空，必須包含@符號
+    email VARCHAR(100) NOT NULL UNIQUE,
+    
+    -- 密碼哈希值，不能為空（密碼需包含大小寫字母、數字、符號）
+    password_hash VARCHAR(255) NOT NULL,
+    
+    -- 用戶角色：admin=管理員, user=一般用戶
+    role ENUM('admin', 'user') DEFAULT 'user',
+    
+    -- 帳戶狀態：active=啟用, inactive=停用
+    status ENUM('active', 'inactive') DEFAULT 'active',
+    
+    -- 創建時間，自動記錄
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- 最後更新時間，自動更新
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- 添加索引以提高查詢效能
+    INDEX idx_username (username),
+    INDEX idx_email (email),
+    INDEX idx_role (role)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 商品分類表 (categories)
+-- 功能: 管理商品分類
+-- =============================================
+CREATE TABLE categories (
+    -- 分類ID，主鍵
+    category_id INT PRIMARY KEY AUTO_INCREMENT,
+    
+    -- 分類名稱，不能為空
+    category_name VARCHAR(100) NOT NULL,
+    
+    -- 分類描述
+    description TEXT,
+    
+    -- 分類圖片路徑
+    image_path VARCHAR(255),
+    
+    -- 父分類ID，用於建立分類層級
+    parent_id INT DEFAULT NULL,
+    
+    -- 排序順序
+    sort_order INT DEFAULT 0,
+    
+    -- 是否啟用
+    is_active BOOLEAN DEFAULT TRUE,
+    
+    -- 創建時間
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- 更新時間
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- 外鍵約束，指向父分類
+    FOREIGN KEY (parent_id) REFERENCES categories(category_id) ON DELETE SET NULL,
+    
+    -- 索引
+    INDEX idx_parent_id (parent_id),
+    INDEX idx_is_active (is_active),
+    INDEX idx_sort_order (sort_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 商品表 (products)
+-- 功能: 存儲商品詳細資訊
+-- =============================================
+CREATE TABLE products (
+    -- 商品ID，主鍵
+    product_id INT PRIMARY KEY AUTO_INCREMENT,
+    
+    -- 商品名稱，不能為空
+    product_name VARCHAR(200) NOT NULL,
+    
+    -- 商品描述
+    description TEXT,
+    
+    -- 商品價格，使用DECIMAL確保精度
+    price DECIMAL(10,2) NOT NULL,
+    
+    -- 商品庫存數量
+    stock_quantity INT DEFAULT 0,
+    
+    -- 商品分類ID，外鍵
+    category_id INT NOT NULL,
+    
+    -- 商品主圖片路徑
+    main_image VARCHAR(255),
+    
+    -- 商品狀態：active=上架, inactive=下架, draft=草稿
+    status ENUM('active', 'inactive', 'draft') DEFAULT 'draft',
+    
+    -- 商品重量（克）
+    weight DECIMAL(8,2),
+    
+    -- 商品尺寸（長x寬x高，單位：公分）
+    dimensions VARCHAR(50),
+    
+    -- 商品品牌
+    brand VARCHAR(100),
+    
+    -- 商品SKU（庫存單位）
+    sku VARCHAR(100) UNIQUE,
+    
+    -- 商品標籤，用逗號分隔
+    tags VARCHAR(500),
+    
+    -- 是否為特色商品
+    is_featured BOOLEAN DEFAULT FALSE,
+    
+    -- 商品排序
+    sort_order INT DEFAULT 0,
+    
+    -- 創建者ID
+    created_by INT NOT NULL,
+    
+    -- 創建時間
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- 更新時間
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- 外鍵約束
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE RESTRICT,
+    FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE RESTRICT,
+    
+    -- 索引
+    INDEX idx_category_id (category_id),
+    INDEX idx_status (status),
+    INDEX idx_price (price),
+    INDEX idx_created_by (created_by),
+    INDEX idx_is_featured (is_featured),
+    INDEX idx_sku (sku)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 商品圖片表 (product_images)
+-- 功能: 存儲商品的多張圖片
+-- =============================================
+CREATE TABLE product_images (
+    -- 圖片ID，主鍵
+    image_id INT PRIMARY KEY AUTO_INCREMENT,
+    
+    -- 商品ID，外鍵
+    product_id INT NOT NULL,
+    
+    -- 圖片路徑
+    image_path VARCHAR(255) NOT NULL,
+    
+    -- 圖片描述
+    image_description VARCHAR(255),
+    
+    -- 圖片排序
+    sort_order INT DEFAULT 0,
+    
+    -- 是否為主圖片
+    is_main BOOLEAN DEFAULT FALSE,
+    
+    -- 創建時間
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- 外鍵約束
+    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE,
+    
+    -- 索引
+    INDEX idx_product_id (product_id),
+    INDEX idx_sort_order (sort_order),
+    INDEX idx_is_main (is_main)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =============================================
+-- 插入初始數據
+-- =============================================
+
+-- 插入管理員用戶（密碼: Admin123!@#）
+-- 注意：實際使用時應該使用BCrypt等安全哈希算法
+INSERT INTO users (username, email, password_hash, role, status) VALUES
+('admin', 'admin@ecommerce.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjdQjO1M3b0.8K8Y8K8Y8K8Y8K8Y8K8', 'admin', 'active');
+
+-- 插入商品分類
+INSERT INTO categories (category_name, description, is_active, sort_order) VALUES
+('電子產品', '各種電子設備和配件', TRUE, 1),
+('服裝', '男裝、女裝、童裝', TRUE, 2),
+('家居用品', '家具、裝飾品、生活用品', TRUE, 3),
+('運動用品', '運動器材、健身用品', TRUE, 4),
+('美妝保養', '化妝品、護膚品', TRUE, 5);
+
+-- 插入子分類
+INSERT INTO categories (category_name, description, parent_id, is_active, sort_order) VALUES
+('手機', '智能手機及配件', 1, TRUE, 1),
+('筆記本電腦', '筆記本電腦及配件', 1, TRUE, 2),
+('相機', '數碼相機及配件', 1, TRUE, 3),
+('男裝', '男性服裝', 2, TRUE, 1),
+('女裝', '女性服裝', 2, TRUE, 2),
+('童裝', '兒童服裝', 2, TRUE, 3);
+
+-- =============================================
+-- 創建視圖 (Views)
+-- =============================================
+
+-- 商品詳細資訊視圖
+CREATE VIEW product_details AS
+SELECT 
+    p.product_id,
+    p.product_name,
+    p.description,
+    p.price,
+    p.stock_quantity,
+    p.status,
+    p.weight,
+    p.dimensions,
+    p.brand,
+    p.sku,
+    p.tags,
+    p.is_featured,
+    p.sort_order,
+    p.created_at,
+    p.updated_at,
+    c.category_name,
+    c.category_id,
+    u.username as created_by_username,
+    (SELECT image_path FROM product_images WHERE product_id = p.product_id AND is_main = TRUE LIMIT 1) as main_image
+FROM products p
+LEFT JOIN categories c ON p.category_id = c.category_id
+LEFT JOIN users u ON p.created_by = u.user_id;
+
+-- 商品圖片視圖
+CREATE VIEW product_image_list AS
+SELECT 
+    pi.image_id,
+    pi.product_id,
+    pi.image_path,
+    pi.image_description,
+    pi.sort_order,
+    pi.is_main,
+    pi.created_at,
+    p.product_name
+FROM product_images pi
+LEFT JOIN products p ON pi.product_id = p.product_id;
+
+-- =============================================
+-- 創建存儲過程 (Stored Procedures)
+-- =============================================
+
+-- 驗證密碼強度的存儲過程
+DELIMITER //
+CREATE PROCEDURE ValidatePassword(IN p_password VARCHAR(255), OUT p_is_valid BOOLEAN)
+BEGIN
+    DECLARE has_upper BOOLEAN DEFAULT FALSE;
+    DECLARE has_lower BOOLEAN DEFAULT FALSE;
+    DECLARE has_digit BOOLEAN DEFAULT FALSE;
+    DECLARE has_special BOOLEAN DEFAULT FALSE;
+    
+    -- 檢查大寫字母
+    IF p_password REGEXP '[A-Z]' THEN SET has_upper = TRUE; END IF;
+    
+    -- 檢查小寫字母
+    IF p_password REGEXP '[a-z]' THEN SET has_lower = TRUE; END IF;
+    
+    -- 檢查數字
+    IF p_password REGEXP '[0-9]' THEN SET has_digit = TRUE; END IF;
+    
+    -- 檢查特殊符號
+    IF p_password REGEXP '[!@#$%^&*(),.?":{}|<>]' THEN SET has_special = TRUE; END IF;
+    
+    -- 密碼長度至少8位且包含所有要求
+    SET p_is_valid = (LENGTH(p_password) >= 8 AND has_upper AND has_lower AND has_digit AND has_special);
+END //
+DELIMITER ;
+
+-- 驗證電子郵件格式的存儲過程
+DELIMITER //
+CREATE PROCEDURE ValidateEmail(IN p_email VARCHAR(100), OUT p_is_valid BOOLEAN)
+BEGIN
+    -- 檢查電子郵件是否包含@符號且格式正確
+    SET p_is_valid = (p_email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
+END //
+DELIMITER ;
+
+-- =============================================
+-- 創建觸發器 (Triggers)
+-- =============================================
+
+-- 商品更新時自動更新updated_at
+DELIMITER //
+CREATE TRIGGER update_product_timestamp
+    BEFORE UPDATE ON products
+    FOR EACH ROW
+BEGIN
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END //
+DELIMITER ;
+
+-- 分類更新時自動更新updated_at
+DELIMITER //
+CREATE TRIGGER update_category_timestamp
+    BEFORE UPDATE ON categories
+    FOR EACH ROW
+BEGIN
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END //
+DELIMITER ;
+
+-- 用戶更新時自動更新updated_at
+DELIMITER //
+CREATE TRIGGER update_user_timestamp
+    BEFORE UPDATE ON users
+    FOR EACH ROW
+BEGIN
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END //
+DELIMITER ;
+
+-- =============================================
+-- 創建索引優化查詢效能
+-- =============================================
+
+-- 商品名稱全文搜索索引
+CREATE FULLTEXT INDEX idx_product_name_fulltext ON products(product_name, description);
+
+-- 商品標籤全文搜索索引
+CREATE FULLTEXT INDEX idx_product_tags_fulltext ON products(tags);
+
+-- 分類名稱全文搜索索引
+CREATE FULLTEXT INDEX idx_category_name_fulltext ON categories(category_name, description);
+
+-- =============================================
+-- 資料庫權限設置
+-- =============================================
+
+-- 創建應用程式用戶（實際部署時使用）
+-- CREATE USER 'ecommerce_app'@'localhost' IDENTIFIED BY 'secure_password_here';
+-- GRANT SELECT, INSERT, UPDATE, DELETE ON ecommerce_db.* TO 'ecommerce_app'@'localhost';
+-- FLUSH PRIVILEGES;
+
+-- =============================================
+-- 完成資料庫結構創建
+-- =============================================
+
+-- 顯示創建完成的訊息
+SELECT 'Database schema created successfully!' as message;
+SELECT 'Tables created: users, categories, products, product_images' as tables;
+SELECT 'Views created: product_details, product_image_list' as views;
+SELECT 'Procedures created: ValidatePassword, ValidateEmail' as procedures;
+SELECT 'Triggers created: update timestamps' as triggers;

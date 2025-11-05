@@ -1,0 +1,40 @@
+package com.example.demo.dao.impl;
+
+import com.example.demo.dao.CartDAO;
+import com.example.demo.dao.UserDAO;
+import com.example.demo.model.Cart;
+import com.example.demo.model.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class CartDAOImpl implements CartDAO {
+
+	@Override
+	public List<Cart> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User findById(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void save(Cart cart) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Long id) {
+		// TODO Auto-generated method stub
+		
+	}
+}

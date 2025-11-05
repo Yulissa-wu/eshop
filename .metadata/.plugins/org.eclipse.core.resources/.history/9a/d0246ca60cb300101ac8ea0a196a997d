@@ -1,0 +1,88 @@
+package com.example.demo.dao;
+
+import com.example.demo.model.Order;
+import com.example.demo.model.OrderDetail;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+/**
+ * OrderDAO
+ * 功能：
+ * - 查詢使用者訂單
+ * - 查詢訂單明細
+ */
+@Repository
+public class OrderDAO {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    // ------------------------
+    // RowMapper for Order
+    // ------------------------
+    private RowMapper<Order> orderMapper = new RowMapper<Order>() {
+        @Override
+        public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Order order = new Order();
+            order.setOrderId(rs.getInt("order_id"));
+            order.setCustomerId(rs.getInt("customer_id"));
+            order.setTotalAmount(rs.getDouble("total_amount"));
+            order.setCreatedAt(rs.getTimestamp("created_at"));
+            return order;
+        }
+    };
+
+    // ------------------------
+    // RowMapper for OrderDetail
+    // ------------------------
+    private RowMapper<OrderDetail> detailMapper = new RowMapper<OrderDetail>() {
+        @Override
+        public OrderDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
+            OrderDetail detail = new OrderDetail();
+            detail.setDetailId(rs.getInt("detail_id"));
+            detail.setOrderId(rs.getInt("order_id"));
+            detail.setProdId(rs.getInt("prod_id"));
+            detail.setProductName(rs.getString("name"));
+            detail.setImagePath(rs.getString("image_path"));
+            detail.setQuantity(rs.getInt("quantity"));
+            detail.setPrice(rs.getDouble("price"));
+            return detail;
+        }
+    };
+
+    // ------------------------
+    // 取得使用者所有訂單
+    // ------------------------
+    public List<Order> getOrdersByCustomerId(int customerId) {
+        String sql = "SELECT * FROM orders WHERE customer_id = ? ORDER BY created_at DESC";
+        return jdbcTemplate.query(sql, new Object[]{customerId}, orderMapper);
+    }
+
+    // ------------------------
+    // 取得單筆訂單
+    // ------------------------
+    public Order getOrderById(int orderId) {
+        String sql = "SELECT * FROM orders WHERE order_id = ?";
+        List<Order> list = jdbcTemplate.query(sql, new Object[]{orderId}, orderMapper);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    // ------------------------
+    // 取得訂單明細
+    // ------------------------
+    public List<OrderDetail> getOrderDetailsByOrderId(int orderId) {
+        String sql = "SELECT od.detail_id, od.order_id, od.prod_id, od.quantity, od.price, " +
+                     "p.name, p.image_path " +
+                     "FROM order_detail od " +
+                     "JOIN products p ON od.prod_id = p.prod_id " +
+                     "WHERE od.order_id = ?";
+        return jdbcTemplate.query(sql, new Object[]{orderId}, detailMapper);
+    }
+}

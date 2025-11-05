@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>商品列表</title>
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1>商品列表</h1>
+
+    <div class="row" th:each="p : ${products}">
+        <div class="card">
+            <img th:src="@{'/resources/img/' + ${p.prodNum} + '.png'}" width="150">
+            <h3 th:text="${p.prodName}"></h3>
+            <p th:text="${p.prodType}"></p>
+            <p>$<span th:text="${p.price}"></span></p>
+            <a th:href="@{/products/detail(prodNum=${p.prodNum})}">詳細</a>
+
+            <!-- 只有管理員顯示 -->
+            <sec:authorize access="hasRole('ADMIN')">
+                <a th:href="@{/admin/edit(prodNum=${p.prodNum})}">編輯</a>
+                <a th:href="@{/admin/delete(prodNum=${p.prodNum})}" 
+                   onclick="return confirm('確定刪除?')">刪除</a>
+            </sec:authorize>
+        </div>
+    </div>
+</div>
+</body>
+</html>

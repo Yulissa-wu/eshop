@@ -1,0 +1,5 @@
+body {
+    background-color: blue;
+    justify-content: center;  /* 水平置中 */
+    align-items: center;      /* 垂直置中 */
+}s

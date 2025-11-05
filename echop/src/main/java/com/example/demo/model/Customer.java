@@ -1,0 +1,49 @@
+package com.example.demo.model;
+import javax.persistence.*;
+
+@Entity
+@Table(name = "customers")
+public class Customer {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int cust_num;
+
+    @Column(name = "cust_name", nullable = false)
+    private String cust_name;
+
+    // Constructors
+    public Customer() {}
+
+//    public Costomers(String cust_name, int cust_num) {
+//        this.cust_name = cust_name;
+//        this.cust_num = cust_num;
+//    }
+
+    // Getters and Setters
+	public int getCust_num() {
+		return cust_num;
+	}
+
+	public void setCust_num(int cust_num) {
+		this.cust_num = cust_num;
+	}
+
+	public String getCust_name() {
+		return cust_name;
+	}
+
+	public void setCust_name(String cust_name) {
+		this.cust_name = cust_name;
+	}
+
+    @Override
+    public String toString() {
+        return "Customers{" +
+                "cust_num=" + cust_num +
+                ", cust_name='" + cust_name + '\'' +
+                +
+                '}';
+    }
+
+}

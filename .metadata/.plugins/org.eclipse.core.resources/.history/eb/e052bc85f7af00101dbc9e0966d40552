@@ -1,0 +1,84 @@
+package com.example.demo.test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.math.BigDecimal;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import com.example.demo.config.WebMvcConfig;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.service.ProductService;
+import com.example.demo.service.UserService;
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { WebMvcConfig.class }) // 包含 Web MVC 配置
+@WebAppConfiguration // 必須加，告訴 Spring 測試用 WebApplicationContext
+public class ProductServiceTest {
+//   @Autowired
+//   private ProductService productService;
+//   
+//
+//   public void saveProduct(Product product) {
+//	   productService.saveProduct(product);
+//   }
+//   public void updateProduct(Long id, Product product) {
+//	   productService.updateProduct(id, product );
+//	      }
+//   public void deleteProduct(Long id) {
+//	   productService.deleteProduct(id);
+//   }
+//   public Product getProductById(Long id) {
+//	   return productService.getProductById(id);
+//	   
+//	}
+}
+
+//	@Test
+//   public void testinsert() {
+//     Product product = new Product();
+//     product.setPro_price(new BigDecimal("12.3"));
+//     product.setProd_line("褲子");
+//     product.setProd_name("candy");
+//     product.setProd_type("男裝");
+//     saveProduct(product);
+//     assertTrue("product沒有insert", true);
+//	}
+//	@Test
+//	public void testupdate() {
+//		int id = 1;
+//		Product product = getProductById(id);
+//		product.setProd_name("Terry");
+//		updateProduct(id, product);
+//		Product product1 = getProductById(id);  
+//		assertEquals("使用者 ID 不正確", "Terry", product1.getProd_name());
+//	  
+//	}
+//	public void testdelete() {
+//		int id = 2;
+//		deleteProduct(id);
+//		Product product = getProductById(id);  
+//		
+//		assertNull( "刪除後查詢應該回傳 null", product);
+//	  
+//	}
+//	
+//}
+
+   
+//   @Test
+//   public void testGetProductById() {
+//       // 確認 userService 被正確注入
+//       assertTrue("productService 未注入", productService != null);
+//       // 執行測試
+//       User user = productService.getUserById(1L);
+//       assertNotNull("使用者不存在", user);
+//       assertEquals("使用者 ID 不正確", 1, user.getId().longValue());
+//   }
+//}

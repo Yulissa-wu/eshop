@@ -1,0 +1,48 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dao.CategoryDAO;
+import com.example.demo.model.Category;
+import com.example.demo.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
+public class CategoryServiceImpl implements CategoryService {
+
+    @Autowired
+    private CategoryDAO categoryRepository;
+
+    @Override
+    public List<Category> getAllCategory() {
+        return categoryRepository.findAll();
+    }
+
+    @Override
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id);
+    }
+
+    @Override
+    public void saveCategory(Category category) {
+    	categoryRepository.save(category);
+    }
+
+    @Override
+    public void updateCategory(Long id, Category updatedCategory) {
+    	Category existingCategory = categoryRepository.findById(id);
+        if (existingCategory != null) {
+            existingCategory.setCate_name(updatedCategory.getCate_name());
+            categoryRepository.save(existingCategory);
+        }
+    }
+
+    @Override
+    public void deleteCategory(Long id) {
+    	categoryRepository.delete(id);
+    }
+
+
+}

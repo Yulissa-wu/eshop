@@ -1,0 +1,56 @@
+package com.example.controller;
+
+import com.example.model.bean.Product;
+import com.example.model.dao.ProductDAO;
+import java.io.IOException;
+import java.util.List;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/products")
+public class ProductController extends HttpServlet {
+    private ProductDAO productDAO = new ProductDAO();
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+        String action = request.getParameter("action");
+        
+        if (action == null) {
+            // 顯示所有商品
+            List<Product> products = productDAO.getAllProducts();
+            List<String> categories = productDAO.getAllCategories();
+            
+            request.setAttribute("products", products);
+            request.setAttribute("categories", categories);
+            request.getRequestDispatcher("/product-list.jsp").forward(request, response);
+            
+        } else if ("detail".equals(action)) {
+            // 顯示商品詳情
+            int productId = Integer.parseInt(request.getParameter("id"));
+            Product product = productDAO.getProductById(productId);
+            
+            if (product != null) {
+                request.setAttribute("product", product);
+                request.getRequestDispatcher("/product-detail.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("/products");
+            }
+            
+        } else if ("category".equals(action)) {
+            // 根據分類篩選商品
+            String category = request.getParameter("category");
+            List<Product> products = productDAO.getProductsByCategory(category);
+            List<String> categories = productDAO.getAllCategories();
+            
+            request.setAttribute("products", products);
+            request.setAttribute("categories", categories);
+            request.setAttribute("selectedCategory", category);
+            request.getRequestDispatcher("/product-list.jsp").forward(request, response);
+        }
+    }
+}

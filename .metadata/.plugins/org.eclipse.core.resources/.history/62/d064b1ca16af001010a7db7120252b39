@@ -1,0 +1,17 @@
+    <div class="top-header"><img src="" alt="Pchome" width="50" height="50"></div>
+    <div class="top-body">    
+    <div class=container>
+        
+    <div class=item><img th:src="@{/resources/img/1.png}" alt="行李箱" width="300" height="300">
+    
+    <a th:href="@{/product/product-detail{id}(id=${product.id})}">點我前往 Example 網站</a>
+
+    
+    </div> 
+    <div class="item">Item2</div>
+    <div class="item">Item3</div>
+    <div class="item">Item4</div>  
+    <div class="item">Item5</div> 
+    <div class="item">Item6</div> 
+    </div>
+    <div class="top-footer">Footer欄位內容</div>

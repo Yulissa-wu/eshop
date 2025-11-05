@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>購物車</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h2>🛒 我的購物車</h2>
+
+<table border="1" cellspacing="0" cellpadding="8">
+    <thead>
+        <tr>
+            <th>商品名稱</th>
+            <th>價格</th>
+            <th>數量</th>
+            <th>小計</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="item : ${cartItems}">
+            <td th:text="${item.product.prod_name}">商品名稱</td>
+            <td th:text="${item.product.prod_price}">價格</td>
+            <td>
+                <form th:action="@{'/cart/update/' + ${item.id}}" method="post">
+                    <input type="number" name="quantity" th:value="${item.quantity}" min="1" />
+                    <button type="submit">更新</button>
+                </form>
+            </td>
+            <td th:text="${item.product.prod_price * item.quantity}">小計</td>
+            <td>
+                <a th:href="@{'/cart/remove/' + ${item.id}}">移除</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<hr>
+
+<a th:href="@{/products/home}">⬅ 返回商品列表</a> |
+<a th:href="@{/cart/checkout}">結帳</a>
+
+</body>
+</html>

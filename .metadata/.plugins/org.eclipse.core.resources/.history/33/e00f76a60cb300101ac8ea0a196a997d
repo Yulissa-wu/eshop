@@ -1,0 +1,138 @@
+package com.example.demo.controller;
+
+import com.example.model.demo.Product;
+import com.example.dao.demo.ProductDAO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import javax.servlet.http.HttpSession;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * CartController
+ * 功能：
+ * - 加入商品到購物車
+ * - 移除商品
+ * - 修改商品數量
+ * - 計算總價
+ */
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+
+    private final Logger logger = LoggerFactory.getLogger(CartController.class);
+
+    @Autowired
+    private ProductDAO productDAO;
+
+    // -------------------------------
+    // 顯示購物車
+    // -------------------------------
+    @GetMapping
+    public String showCart(HttpSession session, Model model) {
+        Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new HashMap<>();
+        }
+
+        double total = 0;
+        for (CartItem item : cart.values()) {
+            total += item.getSubtotal();
+        }
+
+        model.addAttribute("cartItems", cart.values());
+        model.addAttribute("total", total);
+        logger.info("顯示購物車，商品數量: {}", cart.size());
+        return "cart";  // 對應 cart.jsp
+    }
+
+    // -------------------------------
+    // 加入商品到購物車
+    // -------------------------------
+    @PostMapping("/add")
+    public String addToCart(@RequestParam("prodId") int prodId,
+                            @RequestParam("quantity") int quantity,
+                            HttpSession session) {
+
+        Product product = productDAO.getProductById(prodId);
+        if (product == null) {
+            logger.warn("商品不存在 prodId={}", prodId);
+            return "redirect:/products/list";
+        }
+
+        Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
+        if (cart == null) cart = new HashMap<>();
+
+        // 若商品已存在購物車，累加數量
+        CartItem item = cart.get(prodId);
+        if (item == null) {
+            item = new CartItem(product, quantity);
+        } else {
+            item.setQuantity(item.getQuantity() + quantity);
+        }
+
+        cart.put(prodId, item);
+        session.setAttribute("cart", cart);
+        logger.info("加入購物車: {} 數量: {}", product.getName(), quantity);
+
+        return "redirect:/cart";
+    }
+
+    // -------------------------------
+    // 移除商品
+    // -------------------------------
+    @GetMapping("/remove/{prodId}")
+    public String removeFromCart(@PathVariable("prodId") int prodId, HttpSession session) {
+        Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
+        if (cart != null && cart.containsKey(prodId)) {
+            CartItem item = cart.remove(prodId);
+            logger.info("移除購物車商品: {}", item.getProduct().getName());
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart";
+    }
+
+    // -------------------------------
+    // 修改商品數量
+    // -------------------------------
+    @PostMapping("/update")
+    public String updateCart(@RequestParam("prodId") int prodId,
+                             @RequestParam("quantity") int quantity,
+                             HttpSession session) {
+        Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("cart");
+        if (cart != null && cart.containsKey(prodId)) {
+            CartItem item = cart.get(prodId);
+            item.setQuantity(quantity);
+            logger.info("更新購物車商品數量: {} 新數量: {}", item.getProduct().getName(), quantity);
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart";
+    }
+
+    // -------------------------------
+    // 購物車內商品模型
+    // -------------------------------
+    public static class CartItem {
+        private Product product;
+        private int quantity;
+
+        public CartItem(Product product, int quantity) {
+            this.product = product;
+            this.quantity = quantity;
+        }
+
+        public Product getProduct() { return product; }
+        public int getQuantity() { return quantity; }
+        public void setQuantity(int quantity) { this.quantity = quantity; }
+
+        // 小計 = 單價 * 數量
+        public double getSubtotal() { return product.getPrice() * quantity; }
+    }
+}

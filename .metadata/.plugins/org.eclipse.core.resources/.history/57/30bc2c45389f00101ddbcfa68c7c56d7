@@ -1,0 +1,14 @@
+body {
+    background-color: blue;
+
+}
+form{
+    height: 100vh;              /* 讓 body 高度佔滿視窗 */
+    display: flex;              /* 啟用 Flexbox */
+    justify-content: center;    /* 水平置中 */
+    align-items: center;        /* 垂直置中 */
+    background-color: blue;     /* 背景藍色 */
+    color: white;               /* 字體白色 */
+    text-align: center;         /* 文字水平置中 */
+    padding: 20px;     
+}]

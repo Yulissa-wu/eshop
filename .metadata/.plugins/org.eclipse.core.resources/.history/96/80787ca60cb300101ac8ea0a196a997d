@@ -1,0 +1,75 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Order;
+import com.example.demo.model.OrderDetail;
+import com.example.demo,dao.OrderDAO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * OrderController
+ * 功能：
+ * - 查詢使用者訂單列表
+ * - 查看訂單明細
+ */
+@Controller
+@RequestMapping("/orders")
+public class OrderController {
+
+    private final Logger logger = LoggerFactory.getLogger(OrderController.class);
+
+    @Autowired
+    private OrderDAO orderDAO;
+
+    // -------------------------------
+    // 顯示使用者訂單列表
+    // -------------------------------
+    @GetMapping("/list")
+    public String listOrders(HttpSession session, Model model) {
+        Integer customerId = (Integer) session.getAttribute("customerId");
+        if (customerId == null) {
+            logger.warn("未登入使用者嘗試查詢訂單");
+            return "redirect:/customers/login";
+        }
+
+        List<Order> orders = orderDAO.getOrdersByCustomerId(customerId);
+        model.addAttribute("orders", orders);
+        logger.info("顯示客戶 {} 訂單列表，共 {} 筆", customerId, orders.size());
+        return "order-list"; // 對應 order-list.jsp
+    }
+
+    // -------------------------------
+    // 顯示單筆訂單明細
+    // -------------------------------
+    @GetMapping("/detail/{orderId}")
+    public String orderDetail(@PathVariable("orderId") int orderId,
+                              HttpSession session,
+                              Model model) {
+        Integer customerId = (Integer) session.getAttribute("customerId");
+        if (customerId == null) {
+            logger.warn("未登入使用者嘗試查看訂單明細");
+            return "redirect:/customers/login";
+        }
+
+        Order order = orderDAO.getOrderById(orderId);
+        if (order == null || !order.getCustomerId().equals(customerId)) {
+            logger.warn("客戶 {} 嘗試查看不存在或非本人訂單 id={}", customerId, orderId);
+            return "redirect:/orders/list";
+        }
+
+        List<OrderDetail> details = orderDAO.getOrderDetailsByOrderId(orderId);
+        model.addAttribute("order", order);
+        model.addAttribute("details", details);
+        logger.info("顯示訂單明細 orderId={}", orderId);
+        return "order-detail"; // 對應 order-detail.jsp
+    }
+}

@@ -1,0 +1,15 @@
+package com.example.demo.dao;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.User;
+import java.util.List;
+
+public interface CartItemDAO {
+    
+	    List<CartItem> findAll();
+	    CartItem findById(Long id);
+	    void save(CartItem existingCart);
+	    void delete(Long id);
+	   
+}

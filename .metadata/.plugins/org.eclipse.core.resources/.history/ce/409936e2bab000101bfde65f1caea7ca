@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<!-- =============================================
+     電商商品展示頁面
+     創建時間: 2024
+     功能: 商品展示、分類篩選、搜索功能
+     ============================================= -->
+<html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 頁面基本設定 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品展示 - EShop 系統</title>
+    
+    <!-- 引入 CSS 樣式 -->
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/catalog.css}">
+    
+    <!-- 引入 Bootstrap 框架 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- =============================================
+         頁面導航欄
+         ============================================= -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <!-- 網站標題 -->
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-store"></i> EShop 系統
+            </a>
+            
+            <!-- 響應式導航按鈕 -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- 導航選單 -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">首頁</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/products">商品展示</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/categories">商品分類</a>
+                    </li>
+                </ul>
+                
+                <!-- 用戶操作區域 -->
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/auth/login}">
+                            <i class="fas fa-sign-in-alt"></i> 登錄
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/auth/register}"">
+                            <i class="fas fa-user-plus"></i> 註冊
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- =============================================
+         主要內容區域
+         ============================================= -->
+    <div class="container mt-4">
+        <!-- 頁面標題 -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-4 text-center">
+                    <i class="fas fa-shopping-bag"></i> 商品展示
+                </h1>
+                <p class="text-center text-muted">瀏覽我們精選的商品</p>
+            </div>
+        </div>
+
+        <!-- =============================================
+             搜索和篩選區域
+             ============================================= -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- 搜索框 -->
+                            <div class="col-md-6 mb-3">
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="搜索商品名稱或描述...">
+                                    <button class="btn btn-outline-primary" type="button" id="searchBtn">
+                                        搜索
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 分類篩選 -->
+                            <div class="col-md-3 mb-3">
+                                <select class="form-select" id="categoryFilter">
+                                    <option value="">所有分類</option>
+                                    <!-- 分類選項將由 JavaScript 動態載入 -->
+                                </select>
+                            </div>
+                            
+                            <!-- 狀態篩選 -->
+                            <div class="col-md-3 mb-3">
+                                <select class="form-select" id="statusFilter">
+                                    <option value="">所有狀態</option>
+                                    <option value="active">上架中</option>
+                                    <option value="inactive">已下架</option>
+                                    <option value="draft">草稿</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- 排序選項 -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="sortOption" id="sortNewest" value="newest" checked>
+                                    <label class="btn btn-outline-secondary" for="sortNewest">
+                                        <i class="fas fa-clock"></i> 最新
+                                    </label>
+                                    
+                                    <input type="radio" class="btn-check" name="sortOption" id="sortPriceLow" value="price_low">
+                                    <label class="btn btn-outline-secondary" for="sortPriceLow">
+                                        <i class="fas fa-sort-amount-down"></i> 價格低到高
+                                    </label>
+                                    
+                                    <input type="radio" class="btn-check" name="sortOption" id="sortPriceHigh" value="price_high">
+                                    <label class="btn btn-outline-secondary" for="sortPriceHigh">
+                                        <i class="fas fa-sort-amount-up"></i> 價格高到低
+                                    </label>
+                                    
+                                    <input type="radio" class="btn-check" name="sortOption" id="sortName" value="name">
+                                    <label class="btn btn-outline-secondary" for="sortName">
+                                        <i class="fas fa-sort-alpha-down"></i> 名稱
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- 顯示選項 -->
+                            <div class="col-md-6 text-end">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-secondary" id="gridView">
+                                        <i class="fas fa-th"></i> 網格
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary active" id="listView">
+                                        <i class="fas fa-list"></i> 列表
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =============================================
+             商品展示區域
+             ============================================= -->
+        <div class="row">
+            <!-- 商品列表容器 -->
+            <div class="col-12">
+                <!-- 載入指示器 -->
+                <div id="loadingIndicator" class="text-center py-5" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">載入中...</span>
+                    </div>
+                    <p class="mt-2">正在載入商品...</p>
+                </div>
+                
+                <!-- 商品網格視圖 -->
+                <div id="productGrid" class="row">
+                    <!-- 商品卡片將由 JavaScript 動態生成 -->
+                </div>
+                
+                <!-- 商品列表視圖 -->
+                <div id="productList" class="row" style="display: none;">
+                    <!-- 商品列表項目將由 JavaScript 動態生成 -->
+                </div>
+                
+                <!-- 無商品提示 -->
+                <div id="noProductsMessage" class="text-center py-5" style="display: none;">
+                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                    <h3 class="text-muted">暫無商品</h3>
+                    <p class="text-muted">請嘗試調整搜索條件或篩選器</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- =============================================
+             分頁導航
+             ============================================= -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="商品分頁">
+                    <ul class="pagination justify-content-center" id="pagination">
+                        <!-- 分頁按鈕將由 JavaScript 動態生成 -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================
+         商品詳情模態框
+         ============================================= -->
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalProductName">商品詳情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- 商品圖片 -->
+                        <div class="col-md-6">
+                            <img id="modalProductImage" src="" class="img-fluid rounded" alt="商品圖片">
+                        </div>
+                        
+                        <!-- 商品資訊 -->
+                        <div class="col-md-6">
+                            <h4 id="modalProductTitle"></h4>
+                            <p class="text-muted" id="modalProductDescription"></p>
+                            
+                            <div class="mb-3">
+                                <span class="badge bg-primary" id="modalProductCategory"></span>
+                                <span class="badge bg-success" id="modalProductStatus"></span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>價格: </strong>
+                                <span class="h4 text-danger" id="modalProductPrice"></span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>庫存: </strong>
+                                <span id="modalProductStock"></span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>品牌: </strong>
+                                <span id="modalProductBrand"></span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>SKU: </strong>
+                                <span id="modalProductSku"></span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <strong>標籤: </strong>
+                                <div id="modalProductTags"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-primary" id="addToCartBtn">
+                        <i class="fas fa-cart-plus"></i> 加入購物車
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================
+         頁腳
+         ============================================= -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>EShop 系統</h5>
+                    <p class="text-muted">提供優質的商品和服務</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-muted">&copy; 2024 EShop 系統. 版權所有.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =============================================
+         JavaScript 引入
+         ============================================= -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 自定義 JavaScript -->
+    <script th:src="@{/resources/js/catalog.js}"></script>
+    
+    <!-- 商品展示 JavaScript -->
+    <script>
+        // =============================================
+        // 商品展示頁面 JavaScript
+        // =============================================
+        
+        // 全域變數
+        let currentPage = 1;
+        let pageSize = 12;
+        let currentView = 'list'; // 'grid' 或 'list'
+        let currentFilters = {
+            search: '',
+            category: '',
+            status: '',
+            sort: 'newest'
+        };
+        
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('商品展示頁面載入完成');
+            
+            // 初始化事件監聽器
+            initializeEventListeners();
+            
+            // 載入分類選項
+            loadCategories();
+            
+            // 載入商品列表
+            loadProducts();
+        });
+        
+        // =============================================
+        // 事件監聽器初始化
+        // =============================================
+        function initializeEventListeners() {
+            console.log('初始化事件監聽器');
+            
+            // 搜索按鈕點擊事件
+            document.getElementById('searchBtn').addEventListener('click', function() {
+                console.log('搜索按鈕被點擊');
+                performSearch();
+            });
+            
+            // 搜索框回車事件
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    console.log('搜索框回車事件');
+                    performSearch();
+                }
+            });
+            
+            // 分類篩選變更事件
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                console.log('分類篩選變更:', this.value);
+                currentFilters.category = this.value;
+                loadProducts();
+            });
+            
+            // 狀態篩選變更事件
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                console.log('狀態篩選變更:', this.value);
+                currentFilters.status = this.value;
+                loadProducts();
+            });
+            
+            // 排序選項變更事件
+            document.querySelectorAll('input[name="sortOption"]').forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    console.log('排序選項變更:', this.value);
+                    currentFilters.sort = this.value;
+                    loadProducts();
+                });
+            });
+            
+            // 視圖切換事件
+            document.getElementById('gridView').addEventListener('click', function() {
+                console.log('切換到網格視圖');
+                switchView('grid');
+            });
+            
+            document.getElementById('listView').addEventListener('click', function() {
+                console.log('切換到列表視圖');
+                switchView('list');
+            });
+        }
+        
+        // =============================================
+        // 搜索功能
+        // =============================================
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            console.log('執行搜索:', searchTerm);
+            
+            currentFilters.search = searchTerm;
+            currentPage = 1; // 重置到第一頁
+            loadProducts();
+        }
+        
+        // =============================================
+        // 視圖切換
+        // =============================================
+        function switchView(view) {
+            console.log('切換視圖:', view);
+            
+            currentView = view;
+            
+            if (view === 'grid') {
+                document.getElementById('productGrid').style.display = 'block';
+                document.getElementById('productList').style.display = 'none';
+                document.getElementById('gridView').classList.add('active');
+                document.getElementById('listView').classList.remove('active');
+            } else {
+                document.getElementById('productGrid').style.display = 'none';
+                document.getElementById('productList').style.display = 'block';
+                document.getElementById('gridView').classList.remove('active');
+                document.getElementById('listView').classList.add('active');
+            }
+        }
+        
+        // =============================================
+        // 載入分類選項
+        // =============================================
+        function loadCategories() {
+            console.log('載入分類選項');
+            
+            // 模擬 API 調用
+            fetch('/api/categories')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('分類資料載入成功:', data);
+                    
+                    const categorySelect = document.getElementById('categoryFilter');
+                    
+                    // 清空現有選項（保留"所有分類"選項）
+                    categorySelect.innerHTML = '<option value="">所有分類</option>';
+                    
+                    // 添加分類選項
+                    if (data.success && data.categories) {
+                        data.categories.forEach(category => {
+                            const option = document.createElement('option');
+                            option.value = category.category_id;
+                            option.textContent = category.category_name;
+                            categorySelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('載入分類失敗:', error);
+                });
+        }
+        
+        // =============================================
+        // 載入商品列表
+        // =============================================
+        function loadProducts() {
+            console.log('載入商品列表 - 頁碼:', currentPage, '篩選條件:', currentFilters);
+            
+            // 顯示載入指示器
+            showLoadingIndicator();
+            
+            // 構建查詢參數
+            const params = new URLSearchParams({
+                page: currentPage,
+                pageSize: pageSize,
+                search: currentFilters.search,
+                category: currentFilters.category,
+                status: currentFilters.status,
+                sort: currentFilters.sort
+            });
+            
+            // 模擬 API 調用
+            fetch(`/api/products?${params}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('商品資料載入成功:', data);
+                    
+                    // 隱藏載入指示器
+                    hideLoadingIndicator();
+                    
+                    if (data.success) {
+                        displayProducts(data.products);
+                        updatePagination(data.total_pages, data.page);
+                    } else {
+                        showNoProductsMessage();
+                    }
+                })
+                .catch(error => {
+                    console.error('載入商品失敗:', error);
+                    hideLoadingIndicator();
+                    showErrorMessage('載入商品時發生錯誤');
+                });
+        }
+        
+        // =============================================
+        // 顯示商品
+        // =============================================
+        function displayProducts(products) {
+            console.log('顯示商品:', products.length, '個');
+            
+            if (products.length === 0) {
+                showNoProductsMessage();
+                return;
+            }
+            
+            // 隱藏無商品訊息
+            document.getElementById('noProductsMessage').style.display = 'none';
+            
+            if (currentView === 'grid') {
+                displayProductGrid(products);
+            } else {
+                displayProductList(products);
+            }
+        }
+        
+        // =============================================
+        // 顯示商品網格
+        // =============================================
+        function displayProductGrid(products) {
+            console.log('顯示商品網格視圖');
+            
+            const gridContainer = document.getElementById('productGrid');
+            gridContainer.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = createProductCard(product);
+                gridContainer.appendChild(productCard);
+            });
+        }
+        
+        // =============================================
+        // 顯示商品列表
+        // =============================================
+        function displayProductList(products) {
+            console.log('顯示商品列表視圖');
+            
+            const listContainer = document.getElementById('productList');
+            listContainer.innerHTML = '';
+            
+            products.forEach(product => {
+                const listItem = createProductListItem(product);
+                listContainer.appendChild(listItem);
+            });
+        }
+        
+        // =============================================
+        // 創建商品卡片
+        // =============================================
+        function createProductCard(product) {
+            console.log('創建商品卡片:', product.product_name);
+            
+            const col = document.createElement('div');
+            col.className = 'col-md-4 col-lg-3 mb-4';
+            
+            col.innerHTML = `
+                <div class="card h-100 product-card">
+                    <div class="card-img-top-container">
+                        <img src="${product.main_image || '/resources/img/placeholder.jpg'}" 
+                             class="card-img-top" 
+                             alt="${product.product_name}"
+                             onerror="this.src='/resources/img/placeholder.jpg'">
+                        <div class="card-overlay">
+                            <button class="btn btn-primary btn-sm" onclick="viewProductDetail(${product.product_id})">
+                                <i class="fas fa-eye"></i> 查看詳情
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">${product.product_name}</h5>
+                        <p class="card-text text-muted small">${product.description || '暫無描述'}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="h5 text-danger">$${product.price}</span>
+                                <span class="badge bg-primary">${product.category_name}</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">庫存: ${product.stock_quantity}</small>
+                                <span class="badge ${getStatusBadgeClass(product.status)}">${getStatusText(product.status)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return col;
+        }
+        
+        // =============================================
+        // 創建商品列表項目
+        // =============================================
+        function createProductListItem(product) {
+            console.log('創建商品列表項目:', product.product_name);
+            
+            const col = document.createElement('div');
+            col.className = 'col-12 mb-3';
+            
+            col.innerHTML = `
+                <div class="card product-list-item">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="${product.main_image || '/resources/img/placeholder.jpg'}" 
+                                     class="img-fluid rounded" 
+                                     alt="${product.product_name}"
+                                     onerror="this.src='/resources/img/placeholder.jpg'">
+                            </div>
+                            <div class="col-md-8">
+                                <h5 class="card-title">${product.product_name}</h5>
+                                <p class="card-text">${product.description || '暫無描述'}</p>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-primary me-2">${product.category_name}</span>
+                                    <span class="badge ${getStatusBadgeClass(product.status)}">${getStatusText(product.status)}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <div class="h4 text-danger mb-2">$${product.price}</div>
+                                <div class="mb-2">
+                                    <small class="text-muted">庫存: ${product.stock_quantity}</small>
+                                </div>
+                                <button class="btn btn-primary btn-sm" onclick="viewProductDetail(${product.product_id})">
+                                    <i class="fas fa-eye"></i> 查看詳情
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return col;
+        }
+        
+        // =============================================
+        // 查看商品詳情
+        // =============================================
+        function viewProductDetail(productId) {
+            console.log('查看商品詳情:', productId);
+            
+            // 模擬 API 調用獲取商品詳情
+            fetch(`/api/products/${productId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showProductModal(data.product);
+                    } else {
+                        showErrorMessage('載入商品詳情失敗');
+                    }
+                })
+                .catch(error => {
+                    console.error('載入商品詳情失敗:', error);
+                    showErrorMessage('載入商品詳情時發生錯誤');
+                });
+        }
+        
+        // =============================================
+        // 顯示商品詳情模態框
+        // =============================================
+        function showProductModal(product) {
+            console.log('顯示商品詳情模態框:', product.product_name);
+            
+            // 填充模態框內容
+            document.getElementById('modalProductName').textContent = product.product_name;
+            document.getElementById('modalProductTitle').textContent = product.product_name;
+            document.getElementById('modalProductDescription').textContent = product.description || '暫無描述';
+            document.getElementById('modalProductImage').src = product.main_image || '/resources/img/placeholder.jpg';
+            document.getElementById('modalProductCategory').textContent = product.category_name;
+            document.getElementById('modalProductStatus').textContent = getStatusText(product.status);
+            document.getElementById('modalProductPrice').textContent = `$${product.price}`;
+            document.getElementById('modalProductStock').textContent = product.stock_quantity;
+            document.getElementById('modalProductBrand').textContent = product.brand || '暫無品牌';
+            document.getElementById('modalProductSku').textContent = product.sku || '暫無SKU';
+            
+            // 處理標籤
+            const tagsContainer = document.getElementById('modalProductTags');
+            tagsContainer.innerHTML = '';
+            if (product.tags) {
+                const tags = product.tags.split(',').map(tag => tag.trim());
+                tags.forEach(tag => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-secondary me-1';
+                    badge.textContent = tag;
+                    tagsContainer.appendChild(badge);
+                });
+            }
+            
+            // 顯示模態框
+            const modal = new bootstrap.Modal(document.getElementById('productModal'));
+            modal.show();
+        }
+        
+        // =============================================
+        // 更新分頁
+        // =============================================
+        function updatePagination(totalPages, currentPageNum) {
+            console.log('更新分頁 - 總頁數:', totalPages, '當前頁:', currentPageNum);
+            
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // 上一頁按鈕
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPageNum === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPageNum - 1})">上一頁</a>`;
+            pagination.appendChild(prevLi);
+            
+            // 頁碼按鈕
+            for (let i = 1; i <= totalPages; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPageNum ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+                pagination.appendChild(li);
+            }
+            
+            // 下一頁按鈕
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPageNum === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPageNum + 1})">下一頁</a>`;
+            pagination.appendChild(nextLi);
+        }
+        
+        // =============================================
+        // 切換頁面
+        // =============================================
+        function changePage(page) {
+            console.log('切換到頁面:', page);
+            
+            if (page < 1) return;
+            
+            currentPage = page;
+            loadProducts();
+            
+            // 滾動到頂部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // =============================================
+        // 輔助函數
+        // =============================================
+        
+        // 顯示載入指示器
+        function showLoadingIndicator() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('productGrid').style.display = 'none';
+            document.getElementById('productList').style.display = 'none';
+            document.getElementById('noProductsMessage').style.display = 'none';
+        }
+        
+        // 隱藏載入指示器
+        function hideLoadingIndicator() {
+            document.getElementById('loadingIndicator').style.display = 'none';
+        }
+        
+        // 顯示無商品訊息
+        function showNoProductsMessage() {
+            document.getElementById('noProductsMessage').style.display = 'block';
+            document.getElementById('productGrid').style.display = 'none';
+            document.getElementById('productList').style.display = 'none';
+        }
+        
+        // 顯示錯誤訊息
+        function showErrorMessage(message) {
+            console.error('錯誤訊息:', message);
+            // 這裡可以添加錯誤提示的 UI 實現
+            alert(message);
+        }
+        
+        // 獲取狀態徽章樣式
+        function getStatusBadgeClass(status) {
+            switch (status) {
+                case 'active': return 'bg-success';
+                case 'inactive': return 'bg-danger';
+                case 'draft': return 'bg-warning';
+                default: return 'bg-secondary';
+            }
+        }
+        
+        // 獲取狀態文字
+        function getStatusText(status) {
+            switch (status) {
+                case 'active': return '上架中';
+                case 'inactive': return '已下架';
+                case 'draft': return '草稿';
+                default: return '未知';
+            }
+        }
+    </script>
+</body>
+</html>

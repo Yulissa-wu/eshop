@@ -1,0 +1,640 @@
+/* =============================================
+   用戶認證頁面樣式
+   創建時間: 2024
+   功能: 登錄、註冊、密碼驗證樣式
+   ============================================= */
+
+/* =============================================
+   全域樣式
+   ============================================= */
+
+/* 認證頁面背景 */
+.auth-body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 容器設定 */
+.container {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+/* =============================================
+   導航欄樣式
+   ============================================= */
+
+/* 認證頁面導航欄 */
+.navbar-light {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #2c3e50 !important;
+}
+
+.navbar-brand i {
+    color: #3498db;
+    margin-right: 8px;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #2c3e50 !important;
+    transition: all 0.3s ease;
+    padding: 10px 15px !important;
+    border-radius: 8px;
+}
+
+.nav-link:hover {
+    color: #3498db !important;
+    background-color: rgba(52, 152, 219, 0.1);
+    transform: translateY(-2px);
+}
+
+/* =============================================
+   認證卡片樣式
+   ============================================= */
+
+/* 認證卡片容器 */
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.auth-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* 認證標題 */
+.auth-title {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.auth-title i {
+    color: #3498db;
+    margin-right: 15px;
+    font-size: 2.2rem;
+}
+
+/* 認證副標題 */
+.text-muted {
+    color: #7f8c8d !important;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+/* =============================================
+   認證標籤樣式
+   ============================================= */
+
+/* 認證標籤容器 */
+.auth-tabs {
+    margin-bottom: 30px;
+}
+
+/* 標籤按鈕組 */
+.btn-group {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-group .btn {
+    border: none;
+    padding: 15px 20px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-group .btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-group .btn:hover:before {
+    left: 100%;
+}
+
+.btn-group .btn-outline-primary {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: none;
+}
+
+.btn-group .btn-outline-primary.active {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-group .btn-outline-primary:hover {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* =============================================
+   表單樣式
+   ============================================= */
+
+/* 認證表單 */
+.auth-form {
+    margin-top: 20px;
+}
+
+/* 表單標籤 */
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.form-label i {
+    color: #3498db;
+    margin-right: 8px;
+    width: 20px;
+}
+
+/* 表單輸入框 */
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    background-color: white;
+    transform: translateY(-2px);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* 輸入群組 */
+.input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border: 2px solid #e9ecef;
+    border-left: none;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.input-group .btn:hover {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+/* 表單文字 */
+.form-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+/* 表單檢查框 */
+.form-check {
+    margin: 20px 0;
+}
+
+.form-check-input {
+    border-radius: 6px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.form-check-label {
+    color: #2c3e50;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+/* =============================================
+   按鈕樣式
+   ============================================= */
+
+/* 主要按鈕 */
+.btn-lg {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-lg:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-lg:hover:before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* =============================================
+   密碼強度指示器樣式
+   ============================================= */
+
+/* 密碼強度指示器 */
+#passwordStrengthIndicator {
+    margin-top: 15px;
+}
+
+.progress {
+    height: 8px;
+    border-radius: 10px;
+    background-color: #e9ecef;
+    overflow: hidden;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.progress-bar.bg-danger {
+    background: linear-gradient(90deg, #dc3545, #c82333) !important;
+}
+
+.progress-bar.bg-warning {
+    background: linear-gradient(90deg, #ffc107, #e0a800) !important;
+}
+
+.progress-bar.bg-success {
+    background: linear-gradient(90deg, #28a745, #1e7e34) !important;
+}
+
+#passwordStrengthText {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+/* =============================================
+   訊息樣式
+   ============================================= */
+
+/* 錯誤訊息 */
+.alert-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.alert-danger i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+/* 成功訊息 */
+.alert-success {
+    background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 4px 15px rgba(81, 207, 102, 0.3);
+}
+
+.alert-success i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+/* =============================================
+   連結樣式
+   ============================================= */
+
+/* 忘記密碼連結 */
+#forgotPasswordLink {
+    color: #3498db;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+#forgotPasswordLink:hover {
+    color: #2980b9;
+    text-decoration: underline !important;
+}
+
+/* 服務條款連結 */
+.text-decoration-none {
+    color: #3498db;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.text-decoration-none:hover {
+    color: #2980b9;
+    text-decoration: underline !important;
+}
+
+/* =============================================
+   頁腳樣式
+   ============================================= */
+
+/* 頁腳 */
+footer {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 60px;
+}
+
+footer .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.9rem;
+}
+
+/* =============================================
+   響應式設計
+   ============================================= */
+
+/* 平板設備 */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .auth-card {
+        padding: 30px 25px;
+        margin: 0 10px;
+    }
+    
+    .auth-title {
+        font-size: 1.6rem;
+    }
+    
+    .auth-title i {
+        font-size: 1.8rem;
+    }
+    
+    .btn-group .btn {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .form-control {
+        padding: 12px 15px;
+    }
+    
+    .btn-lg {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}
+
+/* 手機設備 */
+@media (max-width: 576px) {
+    .container {
+        padding: 15px 10px;
+    }
+    
+    .auth-card {
+        padding: 25px 20px;
+        margin: 0 5px;
+        border-radius: 15px;
+    }
+    
+    .auth-title {
+        font-size: 1.4rem;
+    }
+    
+    .auth-title i {
+        font-size: 1.6rem;
+        margin-right: 10px;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        border-radius: 8px;
+        margin-bottom: 5px;
+    }
+    
+    .form-control {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-lg {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .form-label {
+        font-size: 0.9rem;
+    }
+    
+    .form-text {
+        font-size: 0.8rem;
+    }
+}
+
+/* =============================================
+   動畫效果
+   ============================================= */
+
+/* 淡入動畫 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-card {
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* 表單切換動畫 */
+.auth-form {
+    transition: all 0.5s ease;
+}
+
+.auth-form[style*="display: none"] {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.auth-form:not([style*="display: none"]) {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* 按鈕載入動畫 */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* 密碼強度動畫 */
+@keyframes strengthPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.progress-bar {
+    animation: strengthPulse 0.5s ease-in-out;
+}
+
+/* =============================================
+   自定義滾動條
+   ============================================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(52, 152, 219, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(52, 152, 219, 0.7);
+}
+
+/* =============================================
+   工具提示樣式
+   ============================================= */
+
+[title] {
+    cursor: help;
+}
+
+/* =============================================
+   列印樣式
+   ============================================= */
+
+@media print {
+    .navbar,
+    .btn,
+    footer {
+        display: none !important;
+    }
+    
+    .auth-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        background: white !important;
+    }
+    
+    .container {
+        padding: 0 !important;
+    }
+}
+
+

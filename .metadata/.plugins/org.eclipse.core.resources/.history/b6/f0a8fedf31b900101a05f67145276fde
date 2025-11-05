@@ -1,0 +1,130 @@
+package com.example.demo.dao.impl;
+
+import com.example.demo.dao.CartDAO;
+import com.example.demo.dao.CartItemDAO;
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
+
+@Repository
+@Transactional
+public class CartItemDAOImpl implements CartItemDAO {
+    @PersistenceContext
+    private EntityManager entityManager;
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
+
+    @Override
+    public List<CartItem> findAll() {
+        return entityManager.createQuery("SELECT c FROM CartItem c", CartItem.class).getResultList();
+    }
+
+    @Override
+    public CartItem findById(Long id) {
+        return entityManager.find(CartItem.class, id);
+    }
+
+    @Override
+    public void save(CartItem cartItem) {
+        entityManager.merge(cartItem);
+    }
+
+    @Override
+    public void delete(Long id) {
+        CartItem item = findById(id);
+        if (item != null) entityManager.remove(item);
+    }
+
+    @Override
+    public Cart findByCustomer(Customer customer) {
+        String jpql = "SELECT c FROM Cart c WHERE c.customer = :customer";
+        List<Cart> carts = entityManager.createQuery(jpql, Cart.class)
+                                        .setParameter("customer", customer)
+                                        .getResultList();
+        return carts.isEmpty() ? null : carts.get(0);
+    }
+
+	@Override
+	public void save(Cart cart) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public List<CartItem> findAllByUserId(Long id) {
+	    String jpql = "SELECT ci FROM CartItem ci WHERE ci.cart.customer.user.id = :userId";
+	    return entityManager.createQuery(jpql, CartItem.class)
+	                        .setParameter("userId", id)
+	                        .getResultList();
+	}
+    @Override
+    public List<CartItem> findByCart(Cart cart) {
+        String jpql = "SELECT c FROM CartItem c WHERE c.cart = :cart";
+        return entityManager.createQuery(jpql, CartItem.class)
+                .setParameter("cart", cart)
+                .getResultList();
+    }
+    @Override
+    public Customer findByUser(User user) {
+        String jpql = "SELECT c FROM Customer c WHERE c.user = :user";
+        TypedQuery<Customer> query = entityManager.createQuery(jpql, Customer.class);
+        query.setParameter("user", user);
+        return query.getResultStream().findFirst().orElse(null);
+    }
+
+    @Override
+    public Customer findByEmail(String email) {
+        String jpql = "SELECT c FROM Customer c WHERE c.email = :email";
+        TypedQuery<Customer> query = entityManager.createQuery(jpql, Customer.class);
+        query.setParameter("email", email);
+        return query.getResultStream().findFirst().orElse(null);
+    }
+
+    @Override
+    public Customer findByCustomer(String customerId) {
+        String jpql = "SELECT c FROM Customer c WHERE c.customerId = :customerId";
+        TypedQuery<Customer> query = entityManager.createQuery(jpql, Customer.class);
+        query.setParameter("customerId", customerId);
+        return query.getResultStream().findFirst().orElse(null);
+    }
+
+    @Override
+    public Customer findByCustomerName(String customerName) {
+        String jpql = "SELECT c FROM Customer c WHERE c.customerName = :customerName";
+        TypedQuery<Customer> query = entityManager.createQuery(jpql, Customer.class);
+        query.setParameter("customerName", customerName);
+        return query.getResultStream().findFirst().orElse(null);
+    }
+    
+	@Override
+	public void saveCartItem(CartItem cartItem) {
+		if (cartItem.getCart() == null || cartItem.getProduct() == null) {
+			throw new IllegalArgumentException("CartItem 必須有 Cart 與 Product");
+		}
+		entityManager.merge(cartItem);
+	}
+
+	@Override
+	public void deleteCartItem(CartItem item) {
+		// TODO Auto-generated method stub
+		
+	}
+}
+

@@ -1,0 +1,29 @@
+package com.example.demo.model;
+
+import java.sql.Timestamp;
+
+/**
+ * 訂單主表 Model
+ * 對應資料表 orders
+ */
+public class Order {
+    private int orderId;           // 訂單編號
+    private int customerId;        // 客戶編號
+    private double totalAmount;    // 總金額
+    private Timestamp createdAt;   // 訂單建立時間
+
+    // --------------------
+    // Getter 與 Setter
+    // --------------------
+    public int getOrderId() { return orderId; }
+    public void setOrderId(int orderId) { this.orderId = orderId; }
+
+    public int getCustomerId() { return customerId; }
+    public void setCustomerId(int customerId) { this.customerId = customerId; }
+
+    public double getTotalAmount() { return totalAmount; }
+    public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }
+
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+}

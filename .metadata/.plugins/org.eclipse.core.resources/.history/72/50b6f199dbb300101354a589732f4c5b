@@ -1,0 +1,103 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/products")
+public class ProductController {
+    
+    @Autowired
+    private ProductService productService;
+    
+
+    @GetMapping
+    public String listProduct(Model model) {
+        model.addAttribute("products",productService.getAllProduct());
+        return "products";
+    }
+    
+    @GetMapping("/home")
+    public String listProduct4(Model model) {
+        model.addAttribute("products",productService.getAllProduct());
+        return "index";
+    }
+    
+    @GetMapping("/auth/login")
+    public String listProduct3(Model model) {
+        model.addAttribute("products",productService.getAllProduct());
+        return "login";
+    }
+    
+    @GetMapping("/cart")
+    public String listProduct2(Model model) {
+        model.addAttribute("products",productService.getAllProduct());
+        return "cart";
+    }
+    
+    @GetMapping("/auth/register")
+    public String listProduct1(Model model) {
+        model.addAttribute("products",productService.getAllProduct());
+        return "register";
+    }
+    
+    @GetMapping("/orderlist")
+    public String listProduct0(Model model) {
+        model.addAttribute("products",productService.getAllProduct());
+        return "order-listr";
+    }
+    
+    /**
+     * 顯示商品展示頁面
+     * @param model 模型對象
+     * @return 商品展示頁面視圖名稱
+     */
+    @GetMapping("/catalog")
+    public String showProductCatalog(Model model) {
+        // 記錄日誌
+        System.out.println("顯示商品展示頁面");
+        
+        // 添加頁面屬性
+        model.addAttribute("products", productService.getAllProduct());
+        model.addAttribute("pageTitle", "商品展示");
+        model.addAttribute("currentView", "catalog");
+        
+        return "product-catalog"; // 對應 /WEB-INF/views/product-catalog.html
+    }
+    
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("product", new Product());
+        return "add-product";
+    }
+    
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        Product product = productService.getProductById(id);
+        model.addAttribute("product", product);
+        return "edit-product"; // 對應 /WEB-INF/views/edit-user.html
+    }
+    
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable("id") Long id, @ModelAttribute("product") Product product) {
+        productService.updateProduct(id, product);
+        return "redirect:/products";
+    }
+    
+    @PostMapping("/save")
+    public String saveProduct(@ModelAttribute Product product) {
+        productService.saveProduct(product);
+        return "redirect:/products";
+    }
+    
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Long id) {
+        productService.deleteProduct(id);
+        return "redirect:/products";
+    }
+}

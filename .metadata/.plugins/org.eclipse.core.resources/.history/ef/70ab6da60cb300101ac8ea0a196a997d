@@ -1,0 +1,42 @@
+package com.example.demo.model;
+
+/**
+ * 訂單明細 Model
+ * 對應資料表 order_detail
+ */
+public class OrderDetail {
+    private int detailId;      // 明細編號
+    private int orderId;       // 訂單編號
+    private int prodId;        // 商品編號
+    private String productName;// 商品名稱
+    private String imagePath;  // 商品圖片
+    private int quantity;      // 數量
+    private double price;      // 單價
+
+    // --------------------
+    // Getter 與 Setter
+    // --------------------
+    public int getDetailId() { return detailId; }
+    public void setDetailId(int detailId) { this.detailId = detailId; }
+
+    public int getOrderId() { return orderId; }
+    public void setOrderId(int orderId) { this.orderId = orderId; }
+
+    public int getProdId() { return prodId; }
+    public void setProdId(int prodId) { this.prodId = prodId; }
+
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
+
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+
+    // 小計
+    public double getSubtotal() { return price * quantity; }
+}

@@ -1,0 +1,129 @@
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, Object> loginData) {
+        // 記錄API請求日誌
+        System.out.println("收到登錄API請求: " + loginData);
+        
+        try {
+            // 提取登錄資料
+            String loginId = (String) loginData.get("loginId");
+            String password = (String) loginData.get("password");
+            Boolean rememberMe = (Boolean) loginData.get("rememberMe");
+            
+            // 驗證必要參數
+            if (loginId == null || loginId.trim().isEmpty() || 
+                password == null || password.trim().isEmpty()) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "登錄ID和密碼不能為空");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+            
+            // 調用服務層進行登錄驗證
+            Map<String, Object> result = ecommerceService.loginCustomer(loginId.trim(), password);
+            
+            // 記錄登錄結果
+            if ((Boolean) result.get("success")) {
+                System.out.println("登錄成功: " + result.get("cust_name"));
+            } else {
+                System.out.println("登錄失敗: " + result.get("message"));
+            }
+            
+            return ResponseEntity.ok(result);
+            
+        } catch (Exception e) {
+            // 記錄錯誤日誌
+            System.err.println("登錄API處理錯誤: " + e.getMessage());
+            e.printStackTrace();
+            
+            // 返回錯誤響應
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "登錄時發生系統錯誤，請稍後再試");
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+    
+    /**
+     * 處理用戶註冊API請求
+     * @param registerData 註冊資料
+     * @return 註冊結果
+     */
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, Object>> register(@RequestBody Map<String, Object> registerData) {
+        // 記錄API請求日誌
+        System.out.println("收到註冊API請求: " + registerData);
+        
+        try {
+            // 提取註冊資料
+            String custName = (String) registerData.get("custName");
+            String email = (String) registerData.get("email");
+            String password = (String) registerData.get("password");
+            String confirmPassword = (String) registerData.get("confirmPassword");
+            String phone = (String) registerData.get("phone");
+            String address = (String) registerData.get("address");
+            
+            // 驗證必要參數
+            if (custName == null || custName.trim().isEmpty() ||
+                email == null || email.trim().isEmpty() ||
+                password == null || password.trim().isEmpty()) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "姓名、電子郵件和密碼不能為空");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+            
+            // 驗證密碼確認
+            if (!password.equals(confirmPassword)) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("success", false);
+                errorResponse.put("message", "密碼和確認密碼不一致");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+            
+            // 調用服務層進行註冊
+            Map<String, Object> result = ecommerceService.registerCustomer(
+                custName.trim(), 
+                email.trim(), 
+                password, 
+                phone != null ? phone.trim() : "", 
+                address != null ? address.trim() : ""
+            );
+            
+            // 記錄註冊結果
+            if ((Boolean) result.get("success")) {
+                System.out.println("註冊成功: " + result.get("cust_name"));
+            } else {
+                System.out.println("註冊失敗: " + result.get("message"));
+            }
+            
+            return ResponseEntity.ok(result);
+            
+        } catch (Exception e) {
+            // 記錄錯誤日誌
+            System.err.println("註冊API處理錯誤: " + e.getMessage());
+            e.printStackTrace();
+            
+            // 返回錯誤響應
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "註冊時發生系統錯誤，請稍後再試");
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
+    
+    /**
+     * 處理登出API請求
+     * @return 登出結果
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logout() {
+        // 記錄登出日誌
+        System.out.println("收到登出API請求");
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("message", "登出成功");
+        
+        return ResponseEntity.ok(result);
+    }
+}

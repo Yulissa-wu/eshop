@@ -1,0 +1,196 @@
+package com.example.demo.controller;
+
+import com.example.demo.dao.CartItemDAO;
+import com.example.demo.model.Cart;
+import com.example.demo.service.CartItemService;
+import com.example.demo.service.CartService;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.service.CartService;
+import com.example.demo.service.ProductService;
+
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import javax.servlet.http.HttpSession;
+import com.example.demo.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+//import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+    
+
+	@Autowired
+    private CartService cartService;
+    
+    @Autowired
+    private ProductService productService;
+    
+    @Autowired
+    private CustomerService customerService;
+    
+    @Autowired
+    private CartItemService cartItemService;
+    @GetMapping("/list")
+    public String listCart(Model model) {
+        model.addAttribute("cartItems", cartService.getAllCartItems());
+        return "cart";
+    }
+
+    @GetMapping
+    public String viewCart(@SessionAttribute("currentUser") User user, Model model) {
+        List<CartItem> cartItems = cartItemService.getAllCartItemsByUser(user.getId());
+        model.addAttribute("cartItems", cartItems);
+        return "cart";
+    }
+
+
+    @PostMapping("/add/{id}")
+    public String addToCart(@PathVariable Long id, HttpSession session,Model model) {
+        
+    	// 1️⃣ 找商品
+        Product product = productService.getProductById(id);
+        if (product == null) {
+            return "redirect:/products/home";
+        }
+
+        // 2️⃣ 從 session 取得目前登入的 user
+        User user = (User) session.getAttribute("currentUser");
+        if (user == null) {
+            return "redirect:/auth/login"; // 未登入則導向登入頁
+        }
+
+        // 3️⃣ 根據 user 找對應的 customer
+        Customer customer = customerService.findByUser(user);
+        if (customer == null) {
+            // 若查不到，建立一個新的 Customer (可選)
+            customer = new Customer();
+            customer.setUser_id(String.valueOf(user.getId()));
+            customerService.saveCustomer(customer);
+        }
+
+        // 4️⃣ 加入購物車
+        
+     // 取得或建立購物車
+        Cart cart = cartService.getCartByCustomer(customer);
+
+        // 建立新的 CartItem
+        CartItem cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setProduct(product);
+        cartItem.setQuantity(1);
+
+        // 儲存 CartItem
+        cartItemService.saveCartItem(cartItem);
+
+        // 同時把 CartItem 加到 Cart
+        cart.getItems().add(cartItem);
+
+        // 更新 Cart（可選，視 DAO 設計而定）
+        cartService.saveCart(cart);
+        
+        cartService.addProductToCart(customer, product);
+
+        // 5️⃣ 回到購物車頁面
+        return "redirect:/cart";
+    }
+
+
+        
+
+
+
+
+
+    @PostMapping("/update/{id}")
+    public String updateQuantity(@PathVariable Long id,
+                                 @RequestParam int quantity,
+                                 HttpSession session) {
+        List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cartItems");
+        if (cartItems != null) {
+            for (CartItem item : cartItems) {
+                if (item.getId().equals(id)) {
+                    item.setQuantity(quantity); // ✅ 更新數量
+                    break;
+                }
+            }
+        }
+        session.setAttribute("cartItems", cartItems);
+        return "redirect:/cart";
+    }
+
+    @GetMapping("/remove/{id}")
+    public String removeFromCart(@PathVariable Long id, HttpSession session) {
+        List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cartItems");
+        if (cartItems != null) {
+            cartItems.removeIf(item -> item.getId().equals(id)); // ✅ 刪除該商品
+        }
+        session.setAttribute("cartItems", cartItems);
+        return "redirect:/cart";
+    }
+
+    // ✅ 結帳（清空購物車）
+    @GetMapping("/checkout")
+    public String checkout(HttpSession session, Model model) {
+        List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cartItems");
+        BigDecimal total = BigDecimal.ZERO;
+
+        if (cartItems != null && !cartItems.isEmpty()) {
+            // 計算總金額
+            total = cartItems.stream()
+                    .map(item -> {
+                        BigDecimal price = toBigDecimal(item.getProduct().getProd_price());
+                        BigDecimal qty = BigDecimal.valueOf(item.getQuantity());
+                        if (price == null) price = BigDecimal.ZERO;
+                        if (qty == null) qty = BigDecimal.ZERO;
+                        return price.multiply(qty);
+                    })
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            // ✅ 清空購物車
+            cartItems.clear();
+        }
+
+        session.setAttribute("cartItems", cartItems);
+        model.addAttribute("cartTotal", total);
+        model.addAttribute("message", "總金額 $" + total + " 已結帳!");
+        return "cart";
+    }
+
+    /**
+     * 將可能的型別安全地轉成 BigDecimal
+     * 支援：BigDecimal, Number (Integer, Long, Double...), String (可 parse), 或 null。
+     */
+    private BigDecimal toBigDecimal(Object o) {
+        if (o == null) return null;
+        if (o instanceof BigDecimal) return (BigDecimal) o;
+        if (o instanceof Number) {
+            return BigDecimal.valueOf(((Number) o).doubleValue());
+        }
+        if (o instanceof String) {
+            String s = ((String) o).trim();
+            if (s.isEmpty()) return null;
+            try {
+                return new BigDecimal(s);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        try {
+            return new BigDecimal(o.toString());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}

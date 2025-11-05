@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>商品列表</title>
+  <!-- 連結外部 CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>商品列表</h1>
+
+  <div class="product-list" id="productList"></div>
+
+  <script>
+    // 模擬商品資料
+    const products = [
+      { id: 1, name: "運動手環", price: 1135, img: "https://via.placeholder.com/220x180", desc: "輕盈舒適，支援健康監測功能" },
+      { id: 2, name: "藍牙耳機", price: 2480, img: "https://via.placeholder.com/220x180", desc: "高音質、長續航，適合通勤使用" },
+      { id: 3, name: "智慧手錶", price: 3250, img: "https://via.placeholder.com/220x180", desc: "防水、防塵，支援多運動模式" }
+    ];
+
+    const list = document.getElementById('productList');
+    list.innerHTML = products.map(p => `
+      <div class="product" onclick="viewDetail(${p.id})">
+        <img src="${p.img}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p class="price">$${p.price}</p>
+        <p>${p.desc}</p>
+      </div>
+    `).join('');
+
+    function viewDetail(id) {
+      // 點擊後跳轉到商品詳細頁
+      window.location.href = `product.html?id=${id}`;
+    }
+  </script>
+</body>
+</html>

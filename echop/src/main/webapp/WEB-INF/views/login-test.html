@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登錄狀態測試</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>登錄狀態測試</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h3>測試登錄</h3>
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" value="admin@ecommerce.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">密碼</label>
+                        <input type="password" class="form-control" id="password" value="Admin123!@#">
+                    </div>
+                    <button type="submit" class="btn btn-primary">登錄</button>
+                </form>
+            </div>
+            
+            <div class="col-md-6">
+                <h3>登錄狀態</h3>
+                <div id="loginStatus" class="alert alert-info">
+                    未登錄
+                </div>
+                <button class="btn btn-secondary" onclick="checkStatus()">檢查狀態</button>
+                <button class="btn btn-warning" onclick="clearStorage()">清除存儲</button>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3>導航欄測試</h3>
+                <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                    <div class="container">
+                        <a class="navbar-brand" href="#">EShop 系統</a>
+                        
+                        <div class="navbar-nav ms-auto">
+                            <!-- 未登錄狀態 -->
+                            <div id="guestNav">
+                                <a class="nav-link" href="/echop/auth/login">登錄</a>
+                            </div>
+                            
+                            <!-- 已登錄狀態 -->
+                            <div id="userNav" style="display: none;">
+                                <div class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <span id="userName">用戶</span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/echop/admin/products" id="adminPanel" style="display: none;">管理員後台</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="logout()">登出</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 頁面載入時檢查狀態
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('頁面載入完成');
+            checkStatus();
+        });
+        
+        // 登錄表單提交
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            console.log('嘗試登錄:', email);
+            
+            fetch('/echop/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    loginId: email,
+                    password: password,
+                    rememberMe: false
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('登錄響應:', data);
+                
+                if (data.success) {
+                    // 存儲用戶信息
+                    localStorage.setItem('user', JSON.stringify({
+                        id: data.id,
+                        cust_num: data.cust_num,
+                        cust_name: data.cust_name,
+                        email: data.email
+                    }));
+                    
+                    console.log('用戶信息已存儲到localStorage');
+                    checkStatus();
+                    
+                    alert('登錄成功！');
+                } else {
+                    alert('登錄失敗: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('登錄錯誤:', error);
+                alert('登錄時發生錯誤');
+            });
+        });
+        
+        // 檢查登錄狀態
+        function checkStatus() {
+            console.log('檢查登錄狀態');
+            
+            const user = localStorage.getItem('user');
+            const statusDiv = document.getElementById('loginStatus');
+            
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    console.log('用戶已登錄:', userData);
+                    
+                    statusDiv.className = 'alert alert-success';
+                    statusDiv.innerHTML = `
+                        <strong>已登錄</strong><br>
+                        用戶名: ${userData.cust_name}<br>
+                        Email: ${userData.email}<br>
+                        ID: ${userData.id}
+                    `;
+                    
+                    // 更新導航欄
+                    updateNavigation(userData);
+                    
+                } catch (e) {
+                    console.error('解析用戶數據失敗:', e);
+                    statusDiv.className = 'alert alert-danger';
+                    statusDiv.textContent = '用戶數據錯誤';
+                    clearStorage();
+                }
+            } else {
+                console.log('用戶未登錄');
+                statusDiv.className = 'alert alert-info';
+                statusDiv.textContent = '未登錄';
+                
+                // 重置導航欄
+                document.getElementById('guestNav').style.display = 'block';
+                document.getElementById('userNav').style.display = 'none';
+            }
+        }
+        
+        // 更新導航欄
+        function updateNavigation(userData) {
+            console.log('更新導航欄:', userData);
+            
+            // 隱藏訪客導航
+            document.getElementById('guestNav').style.display = 'none';
+            
+            // 顯示用戶導航
+            document.getElementById('userNav').style.display = 'block';
+            document.getElementById('userName').textContent = userData.cust_name || userData.email;
+            
+            // 檢查是否為管理員
+            if (userData.email === 'admin@ecommerce.com') {
+                document.getElementById('adminPanel').style.display = 'block';
+                console.log('管理員用戶，顯示管理員後台鏈接');
+            }
+        }
+        
+        // 清除存儲
+        function clearStorage() {
+            console.log('清除localStorage');
+            localStorage.removeItem('user');
+            checkStatus();
+        }
+        
+        // 登出
+        function logout() {
+            console.log('用戶登出');
+            clearStorage();
+            alert('已登出');
+        }
+    </script>
+</body>
+</html>

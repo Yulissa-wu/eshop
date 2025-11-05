@@ -1,0 +1,108 @@
+// ==========================
+// cart.js
+// 功能：管理前端購物車（加入、移除、計算總價）
+// ==========================
+
+// 初始化購物車 (存於 localStorage)
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+// 更新購物車視覺與 localStorage
+function updateCartView() {
+    const cartTable = document.getElementById('cartTable');
+    const cartTotal = document.getElementById('cartTotal');
+
+    if (!cartTable || !cartTotal) return; // 頁面沒有購物車元素就跳過
+
+    cartTable.innerHTML = ''; // 清空舊內容
+    let total = 0;
+
+    cart.forEach(item => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        // 建立 table row
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+            <td><img src="/uploads/${item.image}" alt="${item.name}" width="60"></td>
+            <td>${item.name}</td>
+            <td>
+                <input type="number" min="1" value="${item.quantity}" onchange="changeQuantity(${item.id}, this.value)" style="width:60px">
+            </td>
+            <td>$${item.price}</td>
+            <td>$${subtotal}</td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="removeFromCart(${item.id})">移除</button>
+            </td>
+        `;
+
+        cartTable.appendChild(tr);
+    });
+
+    cartTotal.innerText = `$${total}`;
+    localStorage.setItem('cart', JSON.stringify(cart)); // 儲存
+}
+
+// 加入購物車
+function addToCart(productId) {
+    // 假設有全域 products 陣列 (可由 Thymeleaf / 後端傳入)
+    const product = window.products.find(p => p.id === productId);
+    if (!product) {
+        console.log('找不到商品 ID:', productId);
+        return;
+    }
+
+    const existing = cart.find(item => item.id === productId);
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: 1
+        });
+    }
+
+    console.log('加入購物車:', product.name);
+    updateCartView();
+}
+
+// 移除購物車商品
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    console.log('移除商品 ID:', productId);
+    updateCartView();
+}
+
+// 改變商品數量
+function changeQuantity(productId, quantity) {
+    const item = cart.find(i => i.id === productId);
+    if (item) {
+        item.quantity = parseInt(quantity);
+        if (item.quantity <= 0) item.quantity = 1;
+        console.log('更新數量:', item.name, item.quantity);
+        updateCartView();
+    }
+}
+
+// 結帳 (清空購物車)
+function checkout() {
+    if (cart.length === 0) {
+        alert('購物車是空的!');
+        return;
+    }
+    alert(`總金額 $${cart.reduce((sum, i) => sum + i.price * i.quantity, 0)} 已結帳!`);
+    cart = [];
+    updateCartView();
+}
+
+// 初始化
+updateCartView();
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+window.products = [[${products}]];
+/*]]>*/
+</script>

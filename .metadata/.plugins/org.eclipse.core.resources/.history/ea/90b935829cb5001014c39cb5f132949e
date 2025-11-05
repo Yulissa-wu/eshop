@@ -1,0 +1,86 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dao.CartDAO;
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.service.CartService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Service
+@Transactional
+public class CartServiceImpl implements CartService {
+
+    @Autowired
+    private CartDAO cartRepository;
+
+    @Override
+    public List<Cart> getAllCart() {
+        return cartRepository.findAll();
+    }
+
+    @Override
+    public Cart getCart(Long id) {
+        return cartRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<CartItem> getItems(Cart cart) {
+        return cartItemRepository.findByCart(cart);
+    }
+
+    @Override
+    public BigDecimal calculateTotal(Cart cart) {
+        List<CartItem> items = cartItemRepository.findByCart(cart);
+        return items.stream()
+                .map(i -> i.getProduct().getProd_price().multiply(i.getQuantity()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    public void clearCart(Cart cart) {
+        List<CartItem> items = cartItemRepository.findByCart(cart);
+        cartItemRepository.deleteAll(items);
+    }
+    
+    @Override
+    public List<Cart> getAllCart() {
+        return cartRepository.findAll();
+    }
+
+    @Override
+    public Cart getCartById(Long id) {
+        return cartRepository.findById(id);
+    }
+
+    @Override
+    public void saveCart(Cart cart) {
+    	cartRepository.save(cart);
+    }
+
+    @Override
+    public void updateCart(Long id, Cart updatedCart) {
+    	Cart existingCart = cartRepository.findById(id);
+        if (existingCart != null) {
+//            existingCart.setCart_name(updatedCart.getCart_name());
+//            existingCart.setCart_price(updatedCart.getCart_price());
+            cartRepository.save(existingCart);
+        }
+    }
+
+    @Override
+    public void deleteCart(Long id) {
+    	cartRepository.delete(id);
+    }
+
+
+
+
+
+
+
+}

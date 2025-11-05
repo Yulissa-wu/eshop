@@ -1,0 +1,160 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.service.CartItemService;
+import com.example.demo.service.CartService;
+import com.example.demo.service.CustomerService;
+import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.transaction.Transactional;
+import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private CartItemService cartItemService;
+
+    @Autowired
+    private CustomerService customerService;
+
+    // ✅ 加入購物車
+    @Transactional
+    @PostMapping("/add")
+    public String addToCart(@RequestParam("productId") Long productId,
+                            @RequestParam(value = "quantity", defaultValue = "1") int quantity,
+                            HttpSession session) {
+
+        // 1️⃣ 檢查登入
+        Object obj = session.getAttribute("currentUser");
+        if (!(obj instanceof User)) return "redirect:/auth/login";
+        User user = (User) obj;
+
+        // 2️⃣ 取得 Customer
+        Customer customer = customerService.findByUser(user);
+        if (customer == null) {
+            customer = new Customer();
+            customer.setUser(user);
+            customerService.saveCustomer(customer);
+        }
+
+        // 3️⃣ 取得或建立 Cart
+        Cart cart = cartService.findCartByCustomer(customer);
+//        if (cart == null) {
+//            cart = new Cart();
+//            cart.setCustomer(customer);
+//            cartService.saveCart(cart);  // ✅ 先存 Cart
+//        }
+
+        // 4️⃣ 取得商品
+        Product product = productService.getProductById(productId);
+        if (product == null) return "redirect:/products/home";
+
+        // 5️⃣ 建立或更新 CartItem
+        List<CartItem> items = cartItemService.findByCart(cart);
+        CartItem existingItem = items.stream()
+                .filter(i -> i.getProduct().getId().equals(productId))
+                .findFirst().orElse(null);
+
+        if (existingItem != null) {
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            cartItemService.saveCartItem(existingItem);
+        } else {
+            CartItem cartItem = new CartItem();
+            cartItem.setCart(cart);       // ✅ 指向已存的 Cart
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            cartItemService.saveCartItem(cartItem); // ✅ 寫入資料庫
+        }
+
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 顯示購物車
+    @GetMapping("/view")
+    public String viewCart(HttpSession session, Model model) {
+        Object obj = session.getAttribute("currentUser");
+        if (!(obj instanceof User)) return "redirect:/auth/login";
+        User user = (User) obj;
+
+        Customer customer = customerService.findByUser(user);
+        if (customer == null) return "redirect:/auth/login";
+
+        Cart cart = cartService.findCartByCustomer(customer);
+        List<CartItem> cartItems = (cart != null) ? cartItemService.findByCart(cart) : new ArrayList<>();
+
+        model.addAttribute("cartItems", cartItems);
+
+        BigDecimal total = cartItems.stream()
+                .map(i -> i.getProduct().getProd_price()
+                        .multiply(BigDecimal.valueOf(i.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        model.addAttribute("total", total);
+
+        return "cart";
+    }
+
+    // ✅ 更新數量（資料庫同步）
+    @Transactional
+    @PostMapping("/update/{id}")
+    public String updateQuantity(@PathVariable("id") Long cartItemId,
+                                 @RequestParam("quantity") int quantity,
+                                 HttpSession session) {
+
+        CartItem item = cartItemService.getCartItemById(cartItemId);
+        if (item != null) {
+            item.setQuantity(quantity);
+            cartItemService.saveCartItem(item);
+        }
+
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 移除商品
+    @Transactional
+    @GetMapping("/remove/{id}")
+    public String removeFromCart(@PathVariable("id") Long cartItemId) {
+        cartItemService.deleteCartItem(cartItemId);
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 清空購物車
+    @Transactional
+    @GetMapping("/clear")
+    public String clearCart(HttpSession session) {
+        Object obj = session.getAttribute("currentUser");
+        if (!(obj instanceof User)) return "redirect:/auth/login";
+        User user = (User) obj;
+
+        Customer customer = customerService.findByUser(user);
+        if (customer != null) {
+            Cart cart = cartService.findCartByCustomer(customer);
+            if (cart != null) {
+                List<CartItem> items = cartItemService.findByCart(cart);
+                for (CartItem item : items) {
+                    cartItemService.deleteCartItem(item.getId());
+                }
+            }
+        }
+
+        return "redirect:/cart/view";
+    }
+}

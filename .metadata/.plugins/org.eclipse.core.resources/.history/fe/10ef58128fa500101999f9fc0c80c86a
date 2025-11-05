@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>商品列表</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>商品列表</h1>
+
+  <!-- 分類篩選 -->
+  <div class="filter">
+    <label>分類：
+      <select id="categoryFilter">
+        <option value="all">全部</option>
+        <option value="wearable">可穿戴設備</option>
+        <option value="audio">音訊設備</option>
+        <option value="watch">智慧手錶</option>
+      </select>
+    </label>
+  </div>
+
+  <!-- 商品列表容器 -->
+  <div class="product-list" id="productList"></div>
+
+  <script>
+    // 商品資料
+    const products = [
+      { id: 1, name: "運動手環", category: "wearable", price: 1135, img: "https://via.placeholder.com/220x180", desc: "輕盈舒適，支援健康監測功能" },
+      { id: 2, name: "藍牙耳機", category: "audio", price: 2480, img: "https://via.placeholder.com/220x180", desc: "高音質、長續航，適合通勤使用" },
+      { id: 3, name: "智慧手錶", category: "watch", price: 3250, img: "https://via.placeholder.com/220x180", desc: "防水、防塵，支援多運動模式" },
+      { id: 4, name: "運動耳機", category: "audio", price: 1500, img: "https://via.placeholder.com/220x180", desc: "運動專用，防汗設計" },
+      { id: 5, name: "健身手環", category: "wearable", price: 990, img: "https://via.placeholder.com/220x180", desc: "入門款健身手環，價格親民" }
+    ];
+
+    const productList = document.getElementById('productList');
+    const categoryFilter = document.getElementById('categoryFilter');
+
+    // 顯示商品函式
+    function showProducts(category) {
+      const filtered = category === "all" ? products : products.filter(p => p.category === category);
+      productList.innerHTML = filtered.map(p => `
+        <div class="product" onclick="viewDetail(${p.id})">
+          <img src="${p.img}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p class="price">$${p.price}</p>
+          <p>${p.desc}</p>
+        </div>
+      `).join('');
+    }
+
+    // 點擊商品跳轉詳細頁
+    function viewDetail(id) {
+      window.location.href = `product.html?id=${id}`;
+    }
+
+    // 篩選事件
+    categoryFilter.addEventListener('change', () => {
+      showProducts(categoryFilter.value);
+    });
+
+    // 預設顯示全部商品
+    showProducts('all');
+  </script>
+</body>
+</html>

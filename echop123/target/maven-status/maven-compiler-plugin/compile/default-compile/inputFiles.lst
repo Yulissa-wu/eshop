@@ -1,0 +1,15 @@
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/config/HibernateConfig.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/dao/ProductDAO.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/service/impl/ProductServiceImpl.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/config/WebMvcConfig.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/model/User.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/controller/UserController.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/service/ProductService.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/controller/ProductController.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/service/UserService.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/model/Product.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/dao/impl/UserDAOImpl.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/config/AppConfig.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/service/impl/UserServiceImpl.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/dao/impl/ProductDAOImpl.java
+/home/wsq/eclipse-workspace/echop123/src/main/java/com/example/demo/dao/UserDAO.java

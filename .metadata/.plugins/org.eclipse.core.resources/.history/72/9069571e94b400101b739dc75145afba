@@ -1,0 +1,55 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dao.CartDAO;
+import com.example.demo.model.CartItem;
+
+import com.example.demo.service.CartService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
+public class CartServiceImpl implements CartService {
+
+    @Autowired
+    private CartDAO cartRepository;
+
+    @Override
+    public List<CartItem> getAllCart() {
+        return cartRepository.findAll();
+    }
+
+    @Override
+    public CartItem getCartById(Long id) {
+        return cartRepository.findById(id);
+    }
+
+    @Override
+    public void saveCart(CartItem cart) {
+    	cartRepository.save(cart);
+    }
+
+    @Override
+    public void updateCart(Long id, CartItem updatedCart) {
+    	CartItem existingCart = cartRepository.findById(id);
+        if (existingCart != null) {
+            existingCart.setCart_name(updatedCart.getCart_name());
+            existingCart.setCart_price(updatedCart.getCart_price());
+            cartRepository.save(existingCart);
+        }
+    }
+
+    @Override
+    public void deleteCart(Long id) {
+    	cartRepository.delete(id);
+    }
+
+
+
+
+
+
+
+}

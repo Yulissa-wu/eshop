@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="stylesheet" href="resources/css/style2.css">
+</head>
+<body>
+
+<div class="top-header">
+	<img src="" alt="Pchome" width="50" height="50">
+</div>
+
+
+<div class="top-body">
+	<div class=container>
+
+		<div class=item>
+			<img th:src="@{/resources/img/1.png}" alt="行李箱" width="300"
+				height="300"> <a
+				th:href="@{/product/product-detail{id}(id=${product.id})}">點我前往
+				Example 網站</a>
+
+
+		</div>
+		<div class="item">Item2</div>
+		<div class="item">Item3</div>
+		<div class="item">Item4</div>
+		<div class="item">Item5</div>
+		<div class="item">Item6</div>
+	</div>
+	<tr th:each="product : ${products}">
+		<td th:text="${product.id}"></td>
+		<td th:text="${product.prod_num}"></td>
+		<td th:text="${product.prod_name}"></td>
+		<td th:text="${product.prod_type}"></td>
+		<td th:text="${product.prod_line}"></td>
+		<td th:text="${product.pro_price}"></td>
+		<td><a th:href="@{/products/edit/{id}(id=${product.id})}"
+			class="btn btn-warning btn-sm">Edit</a> <a
+			th:href="@{/products/delete/{id}(id=${product.id})}"
+			class="btn btn-danger btn-sm">Delete</a></td>
+	</tr>
+	</div>>
+	<div class="top-footer">Footer欄位內容</div>
+	</body>
+</html>

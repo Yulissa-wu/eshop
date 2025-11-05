@@ -1,0 +1,43 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dao.UserDAO;
+import com.example.demo.model.User;
+import com.example.demo.service.LoginService;
+import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
+public class LoginServiceImpl implements LoginService {
+
+    @Autowired
+    private UserDAO userDAO;
+
+    @Override
+    public User login(String email, String password) { 
+    	return userDAO.findByUsernameAndPassword(email, password);
+    }
+    @Override
+    public User register(String email) { 
+    	return userDAO.findByEmail(email);
+    }
+    @Override
+    public void save(User user) {
+        // 儲存使用者到資料庫
+        userDAO.save(user);
+        System.out.println("✅ 使用者已成功註冊: " + user.getEmail());
+    }
+	
+    @Override
+    public User findByEmail(String email) {
+        return userDAO.findByEmail(email);
+    }
+    @Override
+    public List<User> findAll() {
+        return userDAO.findAll();
+    }
+}
+

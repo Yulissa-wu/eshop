@@ -1,0 +1,16 @@
+<HTML>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="mycss.css">
+</headw>
+<body>
+<h1>jquery</h1>
+<form action="myjsp.jsp" method="post">
+    first name：<input type="text" name="firstname">
+    lastname：<input type="text" name="lastname">
+    eamil：<input type="text" name="email">
+    password：<input type="text" name="password">
+    <input type="submit" value="送出">
+</form>
+</body>
+</HTML>

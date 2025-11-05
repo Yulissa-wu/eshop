@@ -1,0 +1,14 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%
+    String username = (String) session.getAttribute("username");
+    if (username == null) {
+        response.sendRedirect("login2.jsp");
+    }
+%>
+<html>
+<head><title>會員中心</title></head>
+<body>
+    <h2>歡迎，<%= username %>！</h2>
+    <a href="logout.jsp">登出</a>
+</body>
+</html>

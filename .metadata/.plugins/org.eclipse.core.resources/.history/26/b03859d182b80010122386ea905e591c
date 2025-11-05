@@ -1,0 +1,157 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dao.CartDAO;
+import com.example.demo.dao.CartItemDAO;
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.service.CartService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+
+@Service
+@Transactional
+public class CartServiceImpl implements CartService {
+
+    @Autowired
+    private CartDAO cartRepository;
+    
+    @Autowired
+    private CartItemDAO cartItemRepository;
+    
+        
+    @Override
+    public List<CartItem> getAllCartItems() {
+        return cartItemRepository.findAll();
+    }
+
+    @Override
+    public List<Cart> getAllCart() {
+        return cartRepository.findAll();
+    }
+
+    @Override
+    public Cart getCartById(Long id) {
+        return cartRepository.findById(id);
+    }
+
+    @Override
+    public void saveCart(Cart cart) {
+    	cartRepository.save(cart);
+    }
+
+    @Override
+    public void updateCart(Long id, Cart updatedCart) {
+    	Cart existingCart = cartRepository.findById(id);
+        if (existingCart != null) {
+//            existingCart.setCart_name(updatedCart.getCart_name());
+//            existingCart.setCart_price(updatedCart.getCart_price());
+            cartRepository.save(existingCart);
+        }
+    }
+
+    @Override
+    public void deleteCart(Long id) {
+    	cartRepository.delete(id);
+    }
+
+    @Override
+    public Cart getCartByCustomer(Customer customer) {
+        Cart cart = cartRepository.findByCustomer(customer);
+        if (cart == null) {
+            cart = new Cart();
+            cart.setCustomer(customer);
+            cart.setItems(new HashSet<>());
+            cartRepository.save(cart);  // ✅ 要用 cartDAO
+        }
+        return cart;
+    }
+
+    @Override
+    public void addProductToCart(Customer customer, Product product, int quantity) {
+        Cart cart = getCartByCustomer(customer);
+
+        if (cart.getItems() == null) {
+            cart.setItems(new HashSet<>());
+        }
+
+        CartItem existingItem = cart.getItems().stream()
+                .filter(item -> item.getProduct().getId().equals(product.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (existingItem != null) {
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            cartItemRepository.save(existingItem);
+        } else {
+            CartItem newItem = new CartItem();
+            newItem.setCart(cart);
+            newItem.setProduct(product);
+            newItem.setQuantity(quantity);
+            cart.getItems().add(newItem);
+            cartItemRepository.save(newItem); // ✅ 寫入資料庫
+        }
+
+        cartRepository.save(cart);
+    }
+
+    @Override
+    public List<CartItem> getAllCartItemsByUser(Long userId) {
+        // 透過 DAO 去查該使用者的購物車項目
+        return cartItemRepository.findAllByUserId(userId);
+    }
+
+	@Override
+	public Cart findCartByCustomer(Customer customer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Cart findByCustomer(Customer customer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+    @Override
+    public List<CartItem> findByCart(Cart cart) {
+        return cartItemRepository.findByCart(cart);
+    }
+
+    @Override
+    public void saveCart1(Cart cart) {
+        // 先存 Cart，確保 Cart 有 ID
+    	cartRepository.save(cart);
+
+        // 再存 CartItem
+        if (cart.getItems() != null) {
+            for (CartItem item : cart.getItems()) {
+                item.setCart(cart);  // 綁定已存入的 Cart
+                cartItemRepository.saveCartItem(item);
+            }
+        }
+    }
+
+	@Override
+	public void saveCart(CartItem cartItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveCart(List<CartItem> cart) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+}

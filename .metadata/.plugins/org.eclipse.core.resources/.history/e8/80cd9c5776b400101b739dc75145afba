@@ -1,0 +1,14 @@
+package com.example.demo.dao;
+
+import java.util.List;
+
+public interface CartDAO {
+    
+    List<Cart> findAll();
+    
+    Cart findById(Long id);
+    
+    void save(Cart user);
+    
+    void delete(Long id);
+}

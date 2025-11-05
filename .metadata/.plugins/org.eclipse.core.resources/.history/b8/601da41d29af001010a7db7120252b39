@@ -1,0 +1,11 @@
+http
+    .formLogin(form -> form
+        .loginPage("/login") // 指向上面 login.html
+        .defaultSuccessUrl("/products", true)
+        .failureUrl("/login?error") // 登入失敗
+        .permitAll()
+    )
+    .logout(logout -> logout
+        .logoutSuccessUrl("/login?logout")
+        .permitAll()
+    );

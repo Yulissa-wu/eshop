@@ -1,0 +1,61 @@
+package com.example.demo.dao.impl;
+
+import com.example.demo.dao.CartDAO;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+
+@Transactional
+@Repository
+public class CartDAOImpl implements CartDAO {
+
+	    @PersistenceContext
+	    private EntityManager entityManager;
+
+	    // 取得全部購物車項目
+	    public List<CartItem> findAll() {
+	        String jpql = "SELECT c FROM CartItem c";
+	        return entityManager.createQuery(jpql, CartItem.class).getResultList();
+	    }
+
+	    // 根據 ID 查詢
+	    public CartItem findById(Long id) {
+	        return entityManager.find(CartItem.class, id);
+	    }
+
+	    // 儲存或更新
+	    public void save(CartItem cartItem) {
+	        if (cartItem.getId() == null) {
+	            entityManager.persist(cartItem);
+	        } else {
+	            entityManager.merge(cartItem);
+	        }
+	    }
+
+	    // 刪除
+	    public void delete(Long id) {
+	        CartItem item = findById(id);
+	        if (item != null) {
+	            entityManager.remove(item);
+	        }
+	    }
+
+		@Override
+		public void save(Cart cart) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+}

@@ -1,0 +1,57 @@
+// ===== 商品資料 =====
+const products = [
+  { id: 1, name: "運動手環", category: "wearable", price: 1135, img: "https://via.placeholder.com/220x180", desc: "輕盈舒適，支援健康監測功能" },
+  { id: 2, name: "藍牙耳機", category: "audio", price: 2480, img: "https://via.placeholder.com/220x180", desc: "高音質、長續航，適合通勤使用" },
+  { id: 3, name: "智慧手錶", category: "watch", price: 3250, img: "https://via.placeholder.com/220x180", desc: "防水、防塵，支援多運動模式" },
+  { id: 4, name: "運動耳機", category: "audio", price: 1500, img: "https://via.placeholder.com/220x180", desc: "運動專用，防汗設計" },
+  { id: 5, name: "健身手環", category: "wearable", price: 990, img: "https://via.placeholder.com/220x180", desc: "入門款健身手環，價格親民" }
+];
+
+// ===== 判斷頁面 =====
+const productListContainer = document.getElementById('productList');
+const productDetailContainer = document.getElementById('productDetail');
+
+if (productListContainer) {
+  // ===== 商品列表頁 =====
+  const categoryFilter = document.getElementById('categoryFilter');
+
+  function showProducts(category) {
+    const filtered = category === "all" ? products : products.filter(p => p.category === category);
+    productListContainer.innerHTML = filtered.map(p => `
+      <div class="product" onclick="viewDetail(${p.id})">
+        <img src="${p.img}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p class="price">$${p.price}</p>
+        <p>${p.desc}</p>
+      </div>
+    `).join('');
+  }
+
+  function viewDetail(id) {
+    window.location.href = `product.html?id=${id}`;
+  }
+
+  categoryFilter.addEventListener('change', () => {
+    showProducts(categoryFilter.value);
+  });
+
+  showProducts('all');
+
+} else if (productDetailContainer) {
+  // ===== 商品詳細頁 =====
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get('id'));
+  const product = products.find(p => p.id === id);
+
+  if (product) {
+    productDetailContainer.innerHTML = `
+      <img src="${product.img.replace('220x180', '600x400')}" alt="${product.name}">
+      <h2>${product.name}</h2>
+      <p class="price">$${product.price}</p>
+      <p>${product.desc}</p>
+      <a href="index.html" class="back">← 返回商品列表</a>
+    `;
+  } else {
+    productDetailContainer.innerHTML = `<p>找不到該商品。</p><a href="index.html" class="back">返回列表</a>`;
+  }
+}

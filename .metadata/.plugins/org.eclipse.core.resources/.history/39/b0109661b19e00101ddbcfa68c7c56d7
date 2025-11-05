@@ -1,0 +1,8 @@
+body {
+    background-color: blue;
+
+}
+form{
+	justify-content: center;  /* 水平置中 */
+    align-items: center;      /* 垂直置中 */
+}]

@@ -1,0 +1,55 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dao.OrderDAO;
+import com.example.demo.model.Order;
+import com.example.demo.service.OrderService;
+import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
+public class OrderServiceImpl implements OrderService {
+
+    @Autowired
+    private OrderDAO OrderRepository;
+
+    @Override
+    public List<Order> getAllOrder() {
+        return OrderRepository.findAll();
+    }
+
+    @Override
+    public Order getOrderById(int ord_num) {
+        return OrderRepository.findById(ord_num);
+    }
+
+    @Override
+    public void saveOrder(Order order) {
+    	OrderRepository.save(order);
+    }
+
+    @Override
+    public void updateOrder(int ord_num, Order updatedOrder) {
+    	Order existingOrder = OrderRepository.findById(ord_num);
+//        if (existingUser != null) {
+//            existingUser.setName(updatedUser.getName());
+//            existingUser.setEmail(updatedUser.getEmail());
+//            userRepository.save(existingUser);
+        }
+    
+
+    @Override
+    public void deleteOrder(int ord_num) {
+    	OrderRepository.delete(ord_num);
+    }
+
+
+
+
+}
+
+
+

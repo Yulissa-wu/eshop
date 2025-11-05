@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.m2e.core.pom.overview">
+	</section>
+	<section name="org.eclipse.m2e.core.pom.dependencies">
+	</section>
+	<section name="MavenProjectImportWizardPage">
+		<list key="rootDirectory">
+			<item value="/home/wsq/文件/echopwsq"/>
+			<item value="/home/wsq/文件/echop12345"/>
+			<item value="/home/wsq/eclipse-workspace/echop123"/>
+			<item value="/home/wsq/eclipse-workspace/eshop"/>
+			<item value="/home/wsq/eclipse-workspace/echop"/>
+			<item value="/home/wsq/下載/echop"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+</section>

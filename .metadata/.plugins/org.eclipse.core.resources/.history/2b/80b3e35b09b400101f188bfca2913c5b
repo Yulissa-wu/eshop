@@ -1,0 +1,44 @@
+package com.example.demo.config;
+
+import jakarta.annotation.PreDestroy;
+import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
+
+import org.springframework.stereotype.Component;
+
+/**
+ * ✅ 應用停止時清理 MySQL 驅動與背景執行緒
+ */
+@Component
+public class MySQLCleanup {
+
+    @PreDestroy
+    public void cleanup() {
+        System.out.println("🧹 開始清理 MySQL 驅動與背景執行緒...");
+
+        try {
+            // 停止 MySQL 內部清理執行緒
+            AbandonedConnectionCleanupThread.checkedShutdown();
+            System.out.println("✅ 成功停止 AbandonedConnectionCleanupThread。");
+        } catch (Exception e) {
+            System.err.println("⚠️ 無法停止 MySQL 清理執行緒: " + e.getMessage());
+        }
+
+        // 註銷所有 JDBC Driver
+        Enumeration<Driver> drivers = DriverManager.getDrivers();
+        while (drivers.hasMoreElements()) {
+            Driver driver = drivers.nextElement();
+            try {
+                DriverManager.deregisterDriver(driver);
+                System.out.println("✅ 已註銷 JDBC Driver: " + driver);
+            } catch (SQLException e) {
+                System.err.println("⚠️ 註銷 Driver 時出錯: " + e.getMessage());
+            }
+        }
+
+        System.out.println("🧩 MySQL 清理作業完成。");
+    }
+}

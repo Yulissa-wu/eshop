@@ -1,0 +1,20 @@
+package com.example.demo.service;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.Cart;
+import java.util.List;
+
+public interface CartService {
+    
+    List<Cart> getAllCart();
+    
+    Cart getCartById(Long id);
+    
+    void saveCart(Cart cart);
+    
+    void updateCart(Long id, Cart updatedCart);
+    
+    void deleteCart(Long id);
+
+
+}

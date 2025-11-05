@@ -1,0 +1,18 @@
+package com.example.demo.service;
+
+import com.example.demo.model.Category;
+import java.util.List;
+
+public interface CategoryService {
+    
+    List<Category> getAllProduct();
+    
+    Category getProductById(Long id);
+    
+    void saveProduct(Category category);
+    
+    void updateCategory(Long id, Category updatedProduct);
+    
+    void deleteCategory(Long id);
+
+}

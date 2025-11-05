@@ -1,0 +1,19 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<html>
+<head>
+    <title>${product.name}</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="detail-container">
+        <img src="../${product.image}" alt="${product.name}">
+        <div>
+            <h2>${product.name}</h2>
+            <p>分類：${product.category}</p>
+            <p>價格：${product.price} 元</p>
+            <p>${product.description}</p>
+            <a href="products">返回列表</a>
+        </div>
+    </div>
+</body>
+</html>

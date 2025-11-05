@@ -1,0 +1,183 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Cart;
+import com.example.demo.service.CartService;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.service.CartService;
+import com.example.demo.service.ProductService;
+
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import javax.servlet.http.HttpSession;
+import com.example.demo.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+//import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+    
+
+	@Autowired
+    private CartService cartService;
+    
+    @Autowired
+    private ProductService productService;
+    
+    @Autowired
+    private CustomerService customerService;
+    
+    @GetMapping("/list")
+    public String listCart(Model model) {
+        model.addAttribute("cartItems", cartService.getAllCartItems());
+        return "cart";
+    }
+
+    @GetMapping
+    public String viewCart(HttpSession session, Model model) {
+        List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cartItems");
+        if (cartItems == null) cartItems = new ArrayList<>();
+        model.addAttribute("cartItems", cartItems);
+        return "cart";
+ 
+    }
+
+    @PostMapping("/add/{id}")
+    public String addToCart(@PathVariable Long id, HttpSession session,Model model) {
+        
+    	// 1️⃣ 找商品
+        Product product = productService.getProductById(id);
+        if (product == null) {
+            return "redirect:/products/home";
+        }
+
+        // 2️⃣ 從 session 取得目前登入的 user
+        User user = (User) session.getAttribute("currentUser");
+        if (user == null) {
+            return "redirect:/auth/login"; // 未登入則導向登入頁
+        }
+
+        // 3️⃣ 根據 user 找對應的 customer
+        Customer customer = customerService.findByUser(user);
+        if (customer == null) {
+            // 若查不到，建立一個新的 Customer (可選)
+            customer = new Customer();
+            customer.setUser_id(String.valueOf(user.getId()));
+            customerService.saveCustomer(customer);
+        }
+
+        // 4️⃣ 加入購物車
+        
+        CartItem cartItem = (CartItem) session.getAttribute("CartItem");
+        model.addAttribute("CartItem", cartItem);
+        session.setAttribute("CartItem", cartItem);
+        
+        cartService.addProductToCart(customer, product);
+
+        // 5️⃣ 回到購物車頁面
+        return "redirect:/cart";
+    }
+
+
+        
+
+
+
+
+
+    @PostMapping("/update/{id}")
+    public String updateQuantity(@PathVariable Long id,
+                                 @RequestParam int quantity,
+                                 HttpSession session) {
+        List<Cart> cart = (List<Cart>) session.getAttribute("cart");
+        if (cart != null) {
+            for (Cart item : cart) {
+                if (item.getId().equals(id)) {
+//                	item.setCart_qty(BigDecimal.ZERO);
+                    break;
+                }
+            }
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart";
+    }
+
+    @GetMapping("/remove/{id}")
+    public String removeFromCart(@PathVariable Long id, HttpSession session) {
+        List<Cart> cart = (List<Cart>) session.getAttribute("cart");
+        if (cart != null) {
+            cart.removeIf(item -> item.getId().equals(id));
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart";
+    }
+
+
+
+    // ... 在你的 Controller 類別內 ...
+    @GetMapping("/checkout")
+    public String checkout(HttpSession session, Model model) {
+        List<Cart> cart = (List<Cart>) session.getAttribute("cart");
+        BigDecimal total = BigDecimal.ZERO;
+
+        if (cart != null && !cart.isEmpty()) {
+//            total = cart.stream()
+//                    .map(item -> {
+////                        BigDecimal price = toBigDecimal(item.getCart_price());
+////                        BigDecimal qty = toBigDecimal(item.getCart_qty());
+//                        // 若 price 或 qty 為 null，視為 0
+//                        if (price == null) price = BigDecimal.ZERO;
+//                        if (qty == null) qty = BigDecimal.ZERO;
+//                        return price.multiply(qty);
+//                    })
+//                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            cart.clear();
+        }
+
+        session.setAttribute("cart", cart);
+        model.addAttribute("cartTotal", total);
+        model.addAttribute("message", "總金額 $" + total + " 已結帳!");
+        return "cart";
+    }
+
+    /**
+     * 將可能的型別安全地轉成 BigDecimal
+     * 支援：BigDecimal, Number (Integer, Long, Double...), String (可 parse), 或 null。
+     */
+    private BigDecimal toBigDecimal(Object o) {
+        if (o == null) return null;
+        if (o instanceof BigDecimal) return (BigDecimal) o;
+        if (o instanceof Number) {
+            // 處理 Integer, Long, Double, etc.
+            return BigDecimal.valueOf(((Number) o).doubleValue());
+        }
+        if (o instanceof String) {
+            String s = ((String) o).trim();
+            if (s.isEmpty()) return null;
+            try {
+                return new BigDecimal(s);
+            } catch (NumberFormatException e) {
+                // 無法解析字串，視為 null
+                return null;
+            }
+        }
+        // 若是其他型別，嘗試 toString 再解析
+        try {
+            return new BigDecimal(o.toString());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}

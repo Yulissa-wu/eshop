@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>商品詳細資料</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container" id="productDetail"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>

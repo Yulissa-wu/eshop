@@ -1,0 +1,106 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dao.CartDAO;
+import com.example.demo.dao.CartItemDAO;
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.service.CartItemService;
+import com.example.demo.service.CartService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+
+@Service
+@Transactional
+public class CartItemServiceImpl implements CartItemService {
+
+
+    
+    @Autowired
+    private CartItemDAO cartItemRepository;
+    
+
+        
+    @Override
+    public List<CartItem> getAllCartItems() {
+        return cartItemRepository.findAll();
+    }
+
+ 
+    @Override
+    public CartItem getCartItemById(Long id) {
+        return cartItemRepository.findById(id);
+    }
+
+    @Override
+    public void saveCartItem(CartItem cartItem) {
+    	cartItemRepository.save(cartItem);
+    }
+
+    @Override
+    public void updateCartItem(Long id, CartItem updatedCart) {
+    	Cart existingCart = cartItemRepository.findById(id);
+        if (existingCart != null) {
+//            existingCart.setCart_name(updatedCart.getCart_name());
+//            existingCart.setCart_price(updatedCart.getCart_price());
+        	cartItemRepository.save(existingCart);
+        }
+    }
+
+    @Override
+    public void deleteCartItem(Long id) {
+    	cartItemRepository.delete(id);
+    }
+
+    @Override
+    public Cart getCartByCustomer(Customer customer) {
+        Cart cart = customer.getCart();
+        if (cart == null) {
+            cart = new Cart();
+            cart.setCustomer(customer); 
+            cart.setItems(new HashSet<>());
+            cartItemRepository.save(cartItem);
+            customer.setCart(cart);
+        }
+        return cart;
+    }
+
+    @Override
+    public void addProductToCart(Customer customer, Product product) {
+        Cart cart = getCartByCustomer(customer);
+
+        if (cart.getItems() == null)
+            cart.setItems(new HashSet<>());
+
+        // 檢查是否已有相同商品
+        CartItem existingItem = cart.getItems().stream()
+                .filter(item -> item.getProduct().getId().equals(product.getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (existingItem != null) {
+            existingItem.setQuantity(existingItem.getQuantity() + 1);
+        } else {
+            CartItem newItem = new CartItem();
+            newItem.setCart(cart);
+            newItem.setProduct(product);
+            newItem.setQuantity(1);
+            cart.getItems().add(newItem);
+        }
+
+        cartItemRepository.save(cart);
+    }
+
+
+
+
+
+
+}

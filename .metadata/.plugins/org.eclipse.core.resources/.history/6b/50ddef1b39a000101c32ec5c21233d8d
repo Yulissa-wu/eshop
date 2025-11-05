@@ -1,0 +1,16 @@
+.loginForm {
+	margin: 0;           /* 移除預設邊距 */
+    height: 60vh;       /* 佔滿視窗高度 */
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    background-color: rgb(245, 194, 17);
+    flex-direction: column;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}

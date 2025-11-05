@@ -1,0 +1,28 @@
+.wrap{
+	width: 100%;
+	height: 100vh;
+	margin: 0 auto;  
+}
+.top-header,.top-footer{
+	background: orange;
+	text-align:center;
+	line-height:100px;
+}
+.top-body{
+	background:pink;
+	text-align:center;
+	line-height:300px;
+}
+.container {
+  display: flex;
+  justify-content: space-between; /* 平均分散 */
+  align-items: center; /* 垂直置中 */
+}
+.item{
+  flex: 1;           /* 每個 item 平分寬度 */
+  margin: 0 10px;    /* 間距 */
+  padding: 20px;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+}

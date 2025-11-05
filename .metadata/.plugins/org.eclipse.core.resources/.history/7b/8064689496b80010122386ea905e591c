@@ -1,0 +1,68 @@
+package com.example.demo.dao.impl;
+
+import com.example.demo.dao.CartDAO;
+import com.example.demo.service.CartService;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.Customer;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+@Repository
+public class CartDAOImpl implements CartDAO {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+    
+    @Autowired
+    private CartService CartService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+    
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
+
+    @Override
+    public List<Cart> findAll() {
+        return getCurrentSession().createQuery("FROM Cart", Cart.class).list();
+    }
+
+    @Override
+    public Cart findById(Long id) {
+        return getCurrentSession().get(Cart.class, id);
+    }
+
+    @Override
+    public void save(Cart cart) {
+        entityManager.merge(cart);}
+
+    @Override
+    public void delete(Long id) {
+    	Cart cart = getCurrentSession().get(Cart.class, id);
+        if (cart != null) {
+            getCurrentSession().delete(cart);
+        }
+    }
+    @Override
+    public Cart findByCustomerId(Long id) {
+    	String hql = "FROM Cart c WHERE c.customer.id = :cartId";
+    	Cart cart = getCurrentSession().createQuery(hql ,Cart.class).setParameter("cartId",customer.getId())
+    	.uniqueResult();
+    	return cart;
+    	
+    }
+
+}  
+
+
+    

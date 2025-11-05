@@ -1,0 +1,74 @@
+package com.example.demo.model;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "cart_items")
+public class CartItem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // 主鍵
+
+    // 關聯商品
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    // 關聯使用者
+    @ManyToOne
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
+
+    @Column(name = "quantity", nullable = false)
+    private BigDecimal quantity;
+
+    @Column(name = "added_at", nullable = false)
+    private LocalDateTime addedAt;
+
+    // Constructors
+    public Cart() {}
+
+    public Cart(Product product, User user, BigDecimal quantity, LocalDateTime addedAt) {
+        this.product = product;
+        this.user = user;
+        this.quantity = quantity;
+        this.addedAt = addedAt;
+    }
+
+    // Getter / Setter
+    
+    public Product getProduct() { return product; }
+    public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setProduct(Product product) { this.product = product; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public BigDecimal getQuantity() { return quantity; }
+    public void setQuantity(BigDecimal quantity) { this.quantity = quantity; }
+
+    public LocalDateTime getAddedAt() { return addedAt; }
+    public void setAddedAt(LocalDateTime addedAt) { this.addedAt = addedAt; }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "cart_id=" + cart_id +
+                ", product=" + product.getProd_name() +
+                ", user=" + user.getEmail() +
+                ", quantity=" + quantity +
+                ", addedAt=" + addedAt +
+                '}';
+    }
+}

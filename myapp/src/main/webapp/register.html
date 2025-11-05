@@ -1,0 +1,32 @@
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>註冊頁面</title>
+    <script>
+    function validateForm() {
+        var email = document.forms["regForm"]["email"].value;
+        var pwd1 = document.forms["regForm"]["password"].value;
+        var pwd2 = document.forms["regForm"]["confirm"].value;
+
+        if (email == "" || pwd1 == "") {
+            alert("Email 與密碼不可空白");
+            return false;
+        }
+        if (pwd1 != pwd2) {
+            alert("兩次密碼不一致");
+            return false;
+        }
+        return true;
+    }
+    </script>
+</head>
+<body>
+<h2>會員註冊</h2>
+<form name="regForm" action="register.jsp" method="post" onsubmit="return validateForm();">
+    Email: <input type="text" name="email"><br>
+    密碼: <input type="password" name="password"><br>
+    確認密碼: <input type="password" name="confirm"><br>
+    <input type="submit" value="註冊">
+</form>
+</body>
+</html>

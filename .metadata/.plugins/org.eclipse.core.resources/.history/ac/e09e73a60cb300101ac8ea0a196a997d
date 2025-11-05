@@ -1,0 +1,45 @@
+package com.example.demo.model;
+
+import java.sql.Timestamp;
+
+/**
+ * Product Model
+ * 對應資料表: products
+ */
+public class Product {
+    private int prodId;             // 商品編號
+    private String name;            // 商品名稱
+    private String description;     // 商品描述
+    private double price;           // 價格
+    private int stock;              // 庫存
+    private String imagePath;       // 圖片路徑
+    private Timestamp createdAt;    // 建立時間
+    private Timestamp updatedAt;    // 更新時間
+
+    // --------------------
+    // Getter 與 Setter
+    // --------------------
+    public int getProdId() { return prodId; }
+    public void setProdId(int prodId) { this.prodId = prodId; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
+
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    public Timestamp getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+}

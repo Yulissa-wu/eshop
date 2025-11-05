@@ -1,0 +1,46 @@
+package com.example.demo.dao.impl;
+
+import com.example.demo.dao.CartDAO;
+
+import com.example.demo.model.CartItem;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class CartDAOImpl implements CartDAO {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
+
+    @Override
+    public List<CartItem> findAll() {
+        return getCurrentSession().createQuery("FROM Cart", CartItem.class).list();
+    }
+
+    @Override
+    public CartItem findById(Long id) {
+        return getCurrentSession().get(CartItem.class, id);
+    }
+
+    @Override
+    public void save(CartItem cart) {
+        getCurrentSession().saveOrUpdate(cart);
+    }
+
+    @Override
+    public void delete(Long id) {
+    	CartItem cart = getCurrentSession().get(CartItem.class, id);
+        if (cart != null) {
+            getCurrentSession().delete(cart);
+        }
+    }
+}

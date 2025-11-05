@@ -1,0 +1,12 @@
+<html>
+<head><title>檔案上傳</title>
+<meta charset="UTF-8">
+</head>
+<body>
+<h2>上傳檔案</h2>
+<form action="upload_result.jsp" method="post" enctype="multipart/form-data">
+    選擇檔案: <input type="file" name="file"><br>
+    <input type="submit" value="上傳">
+</form>
+</body>
+</html>

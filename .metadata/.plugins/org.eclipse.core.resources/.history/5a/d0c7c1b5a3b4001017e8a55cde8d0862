@@ -1,0 +1,76 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.User;
+import com.example.demo.service.LoginService;
+import com.example.demo.service.UserService;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/auth")
+public class LoginController {
+    
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private LoginService loginService;
+    
+    @GetMapping
+    public String listUsers(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
+        return "users";
+    }
+    
+    @PostMapping("/login")
+    public String login(@RequestParam("email") String email,
+                        @RequestParam("password") String password,
+                        HttpSession session) {
+
+        User user = loginService.login(email, password); // 這裡 login 回傳 User 物件
+        if (user != null) {
+            // 紀錄 session
+            session.setAttribute("currentUser", user);
+            return "redirect:/products/home"; // 登入成功跳轉
+        } else {
+            // 登入失敗，回到登入頁面，可加錯誤訊息
+            return "redirect:/auth/login?error=true";
+        }
+    }
+
+    
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("user", new User());
+        return "add-user";
+    }
+    
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        User user = userService.getUserById(id);
+        model.addAttribute("user", user);
+        return "edit-user"; // 對應 /WEB-INF/views/edit-user.html
+    }
+    
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable("id") Long id, @ModelAttribute("user") User user) {
+        userService.updateUser(id, user);
+        return "redirect:/users";
+    }
+    
+    @PostMapping("/save")
+    public String saveUser(@ModelAttribute User user) {
+        userService.saveUser(user);
+        return "redirect:/users";
+    }
+    
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
+        return "redirect:/users";
+    }
+}

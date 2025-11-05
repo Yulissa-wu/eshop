@@ -1,0 +1,93 @@
+package com.example.demo.model;
+
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+	@Column(name = "cart_name", nullable = false)
+    private int cart_name;
+
+    @Column(name = "cart_price", nullable = false)
+    private String cart_price;
+
+    @Column(name = "cart_image", nullable = false)
+    private String cart_image;
+
+    @Column(name = "cart_qty", nullable = false)
+    private String cart_qty;
+
+    // Constructors
+    public Product() {}
+    
+    
+    public class Cart {
+    private int id;
+    private String cart_name;
+    private double cart_price;
+    private String cart_image;
+    private int cart_qty;
+
+    public Cart() {}
+    
+    // Getter / Setter
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getCart_name() {
+		return cart_name;
+	}
+
+	public void setCart_name(String cart_name) {
+		this.cart_name = cart_name;
+	}
+
+	public double getCart_price() {
+		return cart_price;
+	}
+
+	public void setCart_price(double cart_price) {
+		this.cart_price = cart_price;
+	}
+
+	public String getCart_image() {
+		return cart_image;
+	}
+
+	public void setCart_image(String cart_image) {
+		this.cart_image = cart_image;
+	}
+
+	public int getCart_qty() {
+		return cart_qty;
+	}
+
+	public void setCart_qty(int cart_qty) {
+		this.cart_qty = cart_qty;
+	}
+
+//    public Cart(int id, String name, double price, String image, int quantity) {
+//        this.id = id;
+//        this.name = name;
+//        this.price = price;
+//        this.image = image;
+//        this.quantity = quantity;
+//    }
+
+
+
+}

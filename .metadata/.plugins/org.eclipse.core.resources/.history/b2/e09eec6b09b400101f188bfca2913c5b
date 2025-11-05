@@ -1,0 +1,51 @@
+package com.example.demo.config;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
+
+import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
+
+/**
+ * ✅ 在 WebApp 停止時清理 MySQL 資源
+ * 避免出現 Illegal access: this web application instance has been stopped already.
+ */
+@WebListener
+public class MySQLCleanupListener implements ServletContextListener {
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        System.out.println("🧹 [MySQLCleanupListener] 開始清理 MySQL 連線資源...");
+
+        // 停止 MySQL 背景清理執行緒
+        try {
+            AbandonedConnectionCleanupThread.checkedShutdown();
+            System.out.println("✅ [MySQLCleanupListener] 已成功停止 MySQL 清理執行緒。");
+        } catch (Exception e) {
+            System.err.println("⚠️ [MySQLCleanupListener] 無法停止清理執行緒：" + e.getMessage());
+        }
+
+        // 註銷所有 JDBC 驅動，防止記憶體洩漏
+        Enumeration<Driver> drivers = DriverManager.getDrivers();
+        while (drivers.hasMoreElements()) {
+            Driver driver = drivers.nextElement();
+            try {
+                DriverManager.deregisterDriver(driver);
+                System.out.println("✅ [MySQLCleanupListener] 已註銷 JDBC Driver：" + driver);
+            } catch (SQLException e) {
+                System.err.println("⚠️ [MySQLCleanupListener] 註銷 Driver 時出錯：" + e.getMessage());
+            }
+        }
+
+        System.out.println("🧩 [MySQLCleanupListener] MySQL 資源清理完成。");
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        // 應用啟動時的事件，可留空
+    }
+}

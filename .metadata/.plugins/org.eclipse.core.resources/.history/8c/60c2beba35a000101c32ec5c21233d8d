@@ -1,0 +1,18 @@
+<HTML>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="mycss.css">
+</head>
+<body>
+	<div class="loginForm">
+		<h1>jquery</h1>
+		<form action="myjsp.jsp" method="post" accept-charset="UTF-8">
+		    first name：<input type="text" name="firstname"><br>
+		    lastname：<input type="text" name="lastname"><br>
+		    eamil：<input type="text" name="email"><br>
+		    password：<input type="text" name="password"><br>
+		    <input type="submit" value="送出">
+		</form>
+	</div>
+</body>
+</HTML>

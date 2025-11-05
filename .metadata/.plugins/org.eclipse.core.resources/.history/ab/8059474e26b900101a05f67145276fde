@@ -1,0 +1,33 @@
+package com.example.demo.service;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.model.Cart;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public interface CartService {
+
+	List<Cart> getAllCart();
+
+	Cart getCartById(Long id);
+
+	void saveCart(List<CartItem> cart);
+
+	void updateCart(Long id, Cart updatedCart);
+
+	void deleteCart(Long id);
+
+	void addProductToCart(Customer customer, Product product, int quantity);
+
+	List<CartItem> getAllCartItemsByUser(Long userId); // ✅ 這行必須存在
+
+	Cart findByCustomerId(Long id);
+
+	void saveCartItem(Long cartId, CartItem cartItem);
+
+}

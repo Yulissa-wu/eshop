@@ -1,0 +1,16 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<jsp:useBean id="myjava" class="com.example.MyJava" scope="request" />
+<jsp:setProperty name="myjava" property="*" />
+
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<h1>使用者資料</h1>
+<p>firstname：<jsp:getProperty name="myjava" property="firstname" /></p>
+<p>lastname:<jsp:getProperty name="myjava" property="lastname" /></p>
+<p>Email：<jsp:getProperty name="myjava" property="email" /></p>
+<p>密碼：<jsp:getProperty name="myjava" property="password" /></p>
+</body>
+</html>

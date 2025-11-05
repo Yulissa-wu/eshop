@@ -1,0 +1,126 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.service.CartService;
+import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private CartService cartService;
+
+    // ✅ 加入購物車（Session + 資料庫）
+    @PostMapping("/add/{id}")
+    public String addToCart(@RequestParam("productId") Long productId,
+                            @RequestParam("quantity") int quantity,
+                            HttpSession session) {
+
+        // 1️⃣ 檢查使用者
+        Customer customer = (Customer) session.getAttribute("currentUser");
+        if (customer == null) {
+            return "redirect:/login";
+        }
+
+        // 2️⃣ 取 Session 中的購物車
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new ArrayList<>();
+        }
+
+        // 3️⃣ 找商品並加入購物車
+        Product product = productService.getProductById(productId);
+        CartItem item = new CartItem();
+        item.setProduct(product);
+        item.setQuantity(quantity);
+        cart.add(item);
+
+        // 更新 Session
+        session.setAttribute("cart", cart);
+
+        // 4️⃣ 同步寫入資料庫
+        cartService.addProductToCart(customer, product);
+
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 顯示購物車
+    @GetMapping("/view")
+    public String viewCart(HttpSession session, Model model) {
+        Customer customer = (Customer) session.getAttribute("currentUser");
+        if (customer == null) {
+            return "redirect:/login";
+        }
+
+        // Session 暫存購物車
+        List<CartItem> sessionCart = (List<CartItem>) session.getAttribute("cart");
+        model.addAttribute("sessionCart", sessionCart);
+
+        // 資料庫購物車
+        Cart dbCart = cartService.getCartByCustomer(customer);
+        model.addAttribute("dbCart", dbCart);
+
+        // 計算總金額
+        BigDecimal total = BigDecimal.ZERO;
+        if (sessionCart != null) {
+            total = sessionCart.stream()
+                    .map(i -> i.getProduct().getProd_price().multiply(BigDecimal.valueOf(i.getQuantity())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+        model.addAttribute("total", total);
+
+        return "cart"; // 對應 cart.html
+    }
+
+    // ✅ 更新數量
+    @PostMapping("/update/{id}")
+    public String updateQuantity(@PathVariable("id") Long id,
+                                 @RequestParam("quantity") int quantity,
+                                 HttpSession session) {
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart != null) {
+            for (CartItem item : cart) {
+                if (item.getProduct().getId().equals(id)) {
+                    item.setQuantity(quantity);
+                    break;
+                }
+            }
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 移除項目
+    @GetMapping("/remove/{id}")
+    public String removeFromCart(@PathVariable("id") Long id, HttpSession session) {
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart != null) {
+            cart.removeIf(item -> item.getProduct().getId().equals(id));
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 清空購物車
+    @GetMapping("/clear")
+    public String clearCart(HttpSession session) {
+        session.removeAttribute("cart");
+        return "redirect:/cart/view";
+    }
+}

@@ -1,0 +1,43 @@
+<!-- ==================== 導覽列 ==================== -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">貝蒂商城</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <!-- 商品分類下拉選單 -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="categoryDropdown"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        商品分類
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+                        <li th:each="category : ${categories}">
+                            <a class="dropdown-item"
+                               th:text="${category.cate_name}"
+                               th:href="@{/product/category/{id}(id=${category.id})}"></a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- 商品搜尋表單 -->
+            <form class="d-flex me-3" th:action="@{/products/search}" method="get">
+                <input class="form-control me-2" type="search" placeholder="搜尋商品" aria-label="搜尋"
+                       name="keyword" th:value="${keyword}">
+                <button class="btn btn-outline-light" type="submit">搜尋</button>
+            </form>
+
+            <!-- 登入 / 註冊 / 購物車 -->
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="/auth/login">登入</a></li>
+                <li class="nav-item"><a class="nav-link" href="/auth/register">註冊</a></li>
+                <li class="nav-item"><a class="nav-link" href="/cart">🛒 購物車</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

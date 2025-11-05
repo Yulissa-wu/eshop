@@ -1,0 +1,49 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dao.ProductDAO;
+import com.example.demo.model.Product;
+import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
+public class ProductServiceImpl implements ProductService {
+
+    @Autowired
+    private ProductDAO productRepository;
+
+    @Override
+    public List<Product> getAllProduct() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public Product getProductById(Long id) {
+        return productRepository.findById(id);
+    }
+
+    @Override
+    public void saveProduct(Product product) {
+        productRepository.save(product);
+    }
+
+    @Override
+    public void updateProduct(Long id, Product updatedProduct) {
+        Product existingProduct = productRepository.findById(id);
+        if (existingProduct != null) {
+            existingProduct.setProd_name(updatedProduct.getProd_name());
+            existingProduct.setProd_price(updatedProduct.getProd_price());
+            existingProduct.setProd_type(updatedProduct.getProd_type());
+            existingProduct.setProd_line(updatedProduct.getProd_line());
+            productRepository.save(existingProduct);
+        }
+    }
+
+    @Override
+    public void deleteProduct(Long id) {
+        productRepository.delete(id);
+    }
+}

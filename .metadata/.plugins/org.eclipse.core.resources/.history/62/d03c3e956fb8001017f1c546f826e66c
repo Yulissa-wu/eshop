@@ -1,0 +1,76 @@
+package com.example.demo.dao.impl;
+
+import com.example.demo.dao.CustomerDAO;
+import com.example.demo.model.Cart;
+import com.example.demo.model.Customer;
+import com.example.demo.model.User;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+@Repository
+public class CustomerDAOImpl implements CustomerDAO {
+
+	@Autowired
+	private SessionFactory sessionFactory;
+
+	private Session getCurrentSession() {
+		return sessionFactory.getCurrentSession();
+	}
+	@PersistenceContext
+    private EntityManager em;
+
+	@Override
+	public List<Customer> findAll() {
+		return getCurrentSession().createQuery("FROM Customer", Customer.class).list();
+	}
+
+	@Override
+	public Customer findById(Long id) {
+		return getCurrentSession().get(Customer.class, id);
+	}
+
+	@Override
+	public void save(Customer customer) {
+		getCurrentSession().saveOrUpdate(customer);
+		
+	}
+
+	@Override
+	public void delete(Long id) {
+    	Customer customer = getCurrentSession().get(Customer.class,id);
+        if (customer != null) {
+            getCurrentSession().delete(customer);
+        }
+	}
+     @Override
+     public Customer findByUser(User user) {
+        return getCurrentSession()
+                    .createQuery("FROM Customer c WHERE c.user = :user", Customer.class)
+                    .setParameter("user", user)
+                    .uniqueResult();
+
+	}
+     @Override
+     public Cart findByCart(Cart cart) {
+         String jpql = "SELECT c FROM Cart c WHERE c = :cart";
+         TypedQuery<Cart> query = em.createQuery(jpql, Cart.class);
+         query.setParameter("cart", cart);
+         return query.getResultStream().findFirst().orElse(null);
+     }
+
+	@Override
+	public Customer findByCustomerName(String customerName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,92 @@
+2025-10-26 11:01:40 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-10-26 11:01:43 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-26 11:01:44 [main] INFO  org.hibernate.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-26 11:01:46 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 11:01:50 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 11:01:52 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 12340 ms
+2025-10-26 11:01:52 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-10-26 11:01:53 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 11:01:53 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 11:01:54 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1377 ms
+2025-10-26 11:03:10 [http-nio-8080-exec-3] WARN  org.springframework.web.servlet.PageNotFound - No mapping for GET /echop/login-test
+2025-10-26 11:03:46 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-10-26 11:03:49 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-26 11:03:50 [main] INFO  org.hibernate.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-26 11:03:51 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 11:03:54 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 11:03:57 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 11310 ms
+2025-10-26 11:03:57 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-10-26 11:03:57 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 11:03:58 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 11:03:59 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1478 ms
+2025-10-26 11:58:00 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-10-26 11:58:03 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-26 11:58:03 [main] INFO  org.hibernate.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-26 11:58:04 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 11:58:06 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 11:58:08 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7930 ms
+2025-10-26 11:58:08 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-10-26 11:58:08 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 11:58:08 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 11:58:08 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 783 ms
+2025-10-26 12:01:00 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-10-26 12:01:04 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-26 12:01:05 [main] INFO  org.hibernate.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-26 12:01:06 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:01:09 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:01:12 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 11686 ms
+2025-10-26 12:01:12 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-10-26 12:01:12 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:01:13 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:01:14 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1511 ms
+2025-10-26 12:02:13 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-10-26 12:02:16 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-26 12:02:17 [main] INFO  org.hibernate.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-26 12:02:19 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:02:22 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:02:24 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 11901 ms
+2025-10-26 12:02:25 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-10-26 12:02:25 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:02:26 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:02:26 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1449 ms
+2025-10-26 12:03:16 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-10-26 12:03:20 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-26 12:03:21 [main] INFO  org.hibernate.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-26 12:03:22 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:03:26 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:03:29 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 12425 ms
+2025-10-26 12:03:29 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-10-26 12:03:29 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:03:30 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:03:30 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1511 ms
+2025-10-26 12:03:48 [http-nio-8080-exec-3] WARN  org.springframework.web.servlet.PageNotFound - No mapping for GET /echop/api/admin/products
+2025-10-26 12:04:47 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-10-26 12:04:50 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-26 12:04:51 [main] INFO  org.hibernate.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-26 12:04:53 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:04:56 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:04:59 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 11715 ms
+2025-10-26 12:04:59 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-10-26 12:04:59 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:05:00 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:05:00 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1558 ms
+2025-10-26 12:05:48 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-10-26 12:05:52 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-26 12:05:53 [main] INFO  org.hibernate.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-26 12:05:54 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:05:58 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:06:00 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 12199 ms
+2025-10-26 12:06:00 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-10-26 12:06:01 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:06:02 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:06:02 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1491 ms
+2025-10-26 12:10:44 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-10-26 12:10:47 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-26 12:10:48 [main] INFO  org.hibernate.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-26 12:10:50 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:10:53 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:10:55 [main] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 11538 ms
+2025-10-26 12:10:55 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-10-26 12:10:56 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2025-10-26 12:10:56 [main] INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-26 12:10:57 [main] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1503 ms

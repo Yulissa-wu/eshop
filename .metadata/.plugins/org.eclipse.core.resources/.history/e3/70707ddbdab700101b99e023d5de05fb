@@ -1,0 +1,163 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.service.CartService;
+import com.example.demo.service.CustomerService;
+import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private CustomerService customerService;
+
+
+    // ✅ 加入購物車（僅限登入後）
+    
+    @PostMapping("/add")
+    public String addToCart(@RequestParam("productId") Long productId,
+                            @RequestParam(value = "quantity", defaultValue = "1") int quantity,
+                            HttpSession session,
+                            Model model) {
+
+        System.out.println("🧩 [DEBUG] 進入 /cart/add, productId = " + productId + ", quantity = " + quantity);
+
+        // 1️⃣ 檢查是否登入
+        Object obj = session.getAttribute("currentUser");
+        System.out.println("🧩 [DEBUG] session.currentUser = " + obj);
+
+        if (obj == null) {
+            System.out.println("🚨 尚未登入，導向登入頁");
+            return "redirect:/auth/login";
+        }
+
+        User user = (User) obj;
+        System.out.println("✅ 登入中使用者：" + user.getUsername());
+
+        // 2️⃣ 找對應的 Customer（綁定 User）
+        Customer customer = customerService.findByUser(user);
+        if (customer == null) {
+            System.out.println("⚠️ 找不到 Customer，重新建立");
+            customer = new Customer();
+            customer.setUser(user);
+            customerService.saveCustomer(customer);
+        }
+
+        // 3️⃣ 取得 Session 裡的購物車
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart == null) {
+            System.out.println("🛒 建立新購物車");
+            cart = new ArrayList<>();
+        }
+
+        // 4️⃣ 查商品
+        Product product = productService.getProductById(productId);
+        if (product == null) {
+            System.out.println("🚨 找不到商品 id=" + productId);
+            return "redirect:/products/home";
+        }
+
+        // 5️⃣ 更新或新增項目
+        CartItem existing = cart.stream()
+                .filter(i -> i.getProduct().getId().equals(productId))
+                .findFirst().orElse(null);
+
+        if (existing != null) {
+            existing.setQuantity(existing.getQuantity() + quantity);
+            System.out.println("🔁 更新數量：" + existing.getQuantity());
+        } else {
+            CartItem newItem = new CartItem();
+            newItem.setProduct(product);
+            newItem.setQuantity(quantity);
+            cart.add(newItem);
+            System.out.println("🆕 新增購物車項目：" + product.getProd_name());
+        }
+
+        // 6️⃣ 放回 Session
+        session.setAttribute("cart", cart);
+        model.addAttribute("cartItems", cart);
+
+        // 7️⃣ 同步寫入資料庫
+        System.out.println("💾 呼叫 cartService.addProductToCart(...)");
+        cartService.addProductToCart(customer, product, quantity);
+
+        System.out.println("✅ 已加入購物車：" + product.getProd_name());
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 顯示購物車
+    @GetMapping("/view")
+    public String viewCart(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("currentUser");
+        if (user == null) return "redirect:/auth/login";
+
+        // 取出 Session 內的購物車
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart == null) cart = new ArrayList<>();
+
+        model.addAttribute("cartItems", cart);
+
+        // 計算總金額
+        model.addAttribute("total", cart.stream()
+                .map(i -> i.getProduct().getProd_price()
+                        .multiply(java.math.BigDecimal.valueOf(i.getQuantity())))
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add));
+
+        return "cart"; // 對應 cart.html
+    }
+
+
+    // ✅ 更新數量
+    @PostMapping("/update/{id}")
+    public String updateQuantity(@PathVariable("id") Long id,
+                                 @RequestParam("quantity") int quantity,
+                                 HttpSession session) {
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart != null) {
+            for (CartItem item : cart) {
+                if (item.getProduct().getId().equals(id)) {
+                    item.setQuantity(quantity);
+                    break;
+                }
+            }
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 移除項目
+    @GetMapping("/remove/{id}")
+    public String removeFromCart(@PathVariable("id") Long id, HttpSession session) {
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart != null) {
+            cart.removeIf(item -> item.getProduct().getId().equals(id));
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 清空購物車
+    @GetMapping("/clear")
+    public String clearCart(HttpSession session) {
+        session.removeAttribute("cart");
+        return "redirect:/cart/view";
+    }
+}

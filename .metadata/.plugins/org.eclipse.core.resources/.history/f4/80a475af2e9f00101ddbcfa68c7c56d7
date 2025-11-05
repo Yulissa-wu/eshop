@@ -1,0 +1,10 @@
+body {
+    background-color: blue;
+
+}
+form{
+    display: flex;            /* 啟用 Flexbox */
+    justify-content: center;  /* 水平置中 */
+    align-items: center;      /* 垂直置中 */
+    height: 100vh; 
+}]

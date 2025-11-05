@@ -1,0 +1,118 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.service.CartService;
+import com.example.demo.service.CustomerService;
+import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private CartService cartService;
+    
+    @Autowired
+    private CustomerService customerService;
+
+    // ✅ 加入購物車（Session + 資料庫）
+    @PostMapping("/add/{id}")
+    public String addToCart(@RequestParam("id") Long id,
+                            @RequestParam(value = "quantity", defaultValue = "1") int quantity,
+                            HttpSession session, Object cartItem) {
+
+        // 1️⃣ 取得使用者（示範）
+        User user = (User) session.getAttribute("currentUser");
+        if (user == null) return "redirect:/auth/login";
+
+        // 2️⃣ 取得 Session 中購物車
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart == null) cart = new ArrayList<>();
+
+        // 3️⃣ 找商品並加入購物車
+        Product product = productService.getProductById(id);
+        CartItem item = new CartItem();
+        item.setProduct(product);
+        item.setQuantity(quantity);
+        cart.add(item);
+
+        // 4️⃣ 更新 Session
+        session.getAttribute("cartItem");
+        model.AddAttribute(cartItem)
+        session.setAttribute("cartItem", cartItem);
+
+        return "redirect:/cart/view";
+    }
+
+    // 顯示購物車
+    @GetMapping("/view")
+    public String viewCart(HttpSession session, Model model) {
+
+        // 1️⃣ 從 Session 取得購物車
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart == null) cart = new ArrayList<>();
+
+        // 2️⃣ 用 Model 傳給前端
+        model.addAttribute("cartItems", cart);
+
+        // 3️⃣ 計算總金額
+        model.addAttribute("total", cart.stream()
+                .map(i -> i.getProduct().getProd_price().multiply(java.math.BigDecimal.valueOf(i.getQuantity())))
+                .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add));
+
+        return "cart"; // 對應 cart.html
+    }
+
+
+    // ✅ 更新數量
+    @PostMapping("/update/{id}")
+    public String updateQuantity(@PathVariable("id") Long id,
+                                 @RequestParam("quantity") int quantity,
+                                 HttpSession session) {
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart != null) {
+            for (CartItem item : cart) {
+                if (item.getProduct().getId().equals(id)) {
+                    item.setQuantity(quantity);
+                    break;
+                }
+            }
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 移除項目
+    @GetMapping("/remove/{id}")
+    public String removeFromCart(@PathVariable("id") Long id, HttpSession session) {
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart != null) {
+            cart.removeIf(item -> item.getProduct().getId().equals(id));
+        }
+        session.setAttribute("cart", cart);
+        return "redirect:/cart/view";
+    }
+
+    // ✅ 清空購物車
+    @GetMapping("/clear")
+    public String clearCart(HttpSession session) {
+        session.removeAttribute("cart");
+        return "redirect:/cart/view";
+    }
+}

@@ -1,0 +1,131 @@
+<!--
+  pom.xml
+  - Maven 專案設定檔
+  - 這份檔案會宣告專案資訊、依賴（Dependencies）與建置插件（Plugins）
+  - 註: 註解用 XML 註解 
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- modelVersion 固定為 4.0.0 -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 專案 groupId / artifactId / version -->
+    <groupId>com.example</groupId>         <!-- 組織/公司識別 -->
+    <artifactId>ecommerce-mvc</artifactId> <!-- 專案名稱 -->
+    <version>1.0-SNAPSHOT</version>        <!-- 版本 -->
+    <packaging>war</packaging>             <!-- 產出 war (deploy 到外部 Tomcat) -->
+
+    <properties>
+        <!-- Java 與 Spring 版本控制 -->
+        <java.version>11</java.version>
+        <spring.version>5.3.30</spring.version>
+        <spring.security.version>5.7.10</spring.security.version>
+        <!-- Tomcat Jasper 版本與 MySQL driver 於 dependencies 中指定 -->
+    </properties>
+
+    <dependencies>
+        <!-- Spring MVC (核心 webmvc) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- Spring JDBC (JdbcTemplate) -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- MySQL Connector/J -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
+
+        <!-- Servlet API (container 提供, 這裡不打包) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0</version>
+            <scope>provided</scope> <!-- provided 表示 Tomcat 會提供實作 -->
+        </dependency>
+
+        <!-- JSP 支援 (Tomcat 的 JSP engine) -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <version>9.0.84</version>
+        </dependency>
+
+        <!-- JSTL 標籤庫 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- Spring Security Web + Config -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+
+        <!-- Spring Security Crypto (BCrypt) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <version>${spring.security.version}</version>
+        </dependency>
+
+        <!-- Logging: 使用 Log4j2 的 SLF4J 實作 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.20.0</version>
+        </dependency>
+
+        <!-- 測試用 JUnit (開發階段可保留) -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>ecommerce-mvc</finalName> <!-- 建置後 war 名稱 -->
+        <plugins>
+            <!-- 編譯插件，設定 source/target Java 版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- WAR 打包 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <!-- 若需要把某些資源排除或包含可以在這配置 -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

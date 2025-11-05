@@ -1,0 +1,73 @@
+package com.example.controller;
+
+import com.example.model.Customer;
+import com.example.dao.CustomerDAO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.regex.Pattern;
+
+@Controller
+@RequestMapping("/customers")
+public class CustomerController {
+
+    @Autowired
+    private CustomerDAO customerDAO;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    // -----------------------------
+    // 註冊頁面
+    // -----------------------------
+    @GetMapping("/register")
+    public String registerForm() {
+        return "customer-register";
+    }
+
+    @PostMapping("/register")
+    public String registerSubmit(@RequestParam("email") String email,
+                                 @RequestParam("password") String password,
+                                 @RequestParam("fullName") String fullName,
+                                 Model model) {
+
+        // Email 必須包含 @
+        if (!email.contains("@")) {
+            model.addAttribute("error", "Email 必須包含 @");
+            return "customer-register";
+        }
+
+        // 密碼驗證: 至少一個大寫、一個小寫、一個數字、一個特殊符號
+        String pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).+$";
+        if (!Pattern.matches(pattern, password)) {
+            model.addAttribute("error", "密碼需包含大寫、小寫、數字及特殊符號");
+            return "customer-register";
+        }
+
+        // 密碼加密
+        String encodedPwd = passwordEncoder.encode(password);
+
+        Customer customer = new Customer();
+        customer.setEmail(email);
+        customer.setPassword(encodedPwd);
+        customer.setFullName(fullName);
+        customer.setRole("ROLE_USER"); // 預設一般使用者
+
+        customerDAO.save(customer);
+        model.addAttribute("success", "註冊成功，請登入");
+        return "customer-login";
+    }
+
+    // -----------------------------
+    // 登入頁面
+    // -----------------------------
+    @GetMapping("/login")
+    public String loginForm() {
+        return "customer-login";
+    }
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品詳細頁</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="product-detail" id="productDetail"></div>
+
+  <script>
+    // 模擬商品資料
+    const products = [
+      { id: 1, name: "T恤", price: 499, desc: "舒適透氣的棉質T恤", img: "img/tshirt.jpg" },
+      { id: 2, name: "手機", price: 15999, desc: "最新旗艦款智慧型手機", img: "img/phone.jpg" },
+      { id: 3, name: "手錶", price: 2999, desc: "時尚防水運動錶", img: "img/watch.jpg" }
+    ];
+
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get("id"));
+    const product = products.find(p => p.id === id);
+
+    const detail = document.getElementById("productDetail");
+
+    if (product) {
+      detail.innerHTML = `
+        <img src="${product.img}" alt="${product.name}">
+        <h2>${product.name}</h2>
+        <p>${product.desc}</p>
+        <p><strong>NT$ ${product.price}</strong></p>
+        <button onclick="history.back()">返回列表</button>
+      `;
+    } else {
+      detail.innerHTML = `<p>找不到該商品。</p>`;
+    }
+  </script>
+</body>
+</html>

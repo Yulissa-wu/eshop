@@ -1,0 +1,55 @@
+package com.example.demo.dao.impl;
+
+import com.example.demo.dao.CartDAO;
+import com.example.demo.dao.CartItemDAO;
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+
+@Repository
+@Transactional
+public class CartItemDAOImpl implements CartItemDAO {
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public List<CartItem> findAll() {
+        return entityManager.createQuery("SELECT c FROM CartItem c", CartItem.class).getResultList();
+    }
+
+    @Override
+    public CartItem findById(Long id) {
+        return entityManager.find(CartItem.class, id);
+    }
+
+    @Override
+    public void save(CartItem item) {
+        entityManager.merge(item);
+    }
+
+    @Override
+    public void delete(Long id) {
+        CartItem item = findById(id);
+        if (item != null) entityManager.remove(item);
+    }
+
+    @Override
+    public Cart findByCustomer(Customer customer) {
+        String jpql = "SELECT c FROM Cart c WHERE c.customer = :customer";
+        List<Cart> carts = entityManager.createQuery(jpql, Cart.class)
+                                        .setParameter("customer", customer)
+                                        .getResultList();
+        return carts.isEmpty() ? null : carts.get(0);
+    }
+}

@@ -1,0 +1,12 @@
+<HTML>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<form action="hello.jsp" method="post">
+    姓名：<input type="text" name="username">
+    <input type="submit" value="送出">
+</form>
+
+</body>
+</HTML>

@@ -1,0 +1,740 @@
+/* =============================================
+   管理員後台樣式
+   創建時間: 2024
+   功能: 管理員界面、商品管理、表格樣式
+   ============================================= */
+
+/* =============================================
+   全域樣式
+   ============================================= */
+
+/* 管理員頁面背景 */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* 容器設定 */
+.container-fluid {
+    padding: 0 20px;
+}
+
+/* =============================================
+   導航欄樣式
+   ============================================= */
+
+/* 管理員導航欄 */
+.navbar-dark.bg-dark {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #ecf0f1 !important;
+}
+
+.navbar-brand i {
+    color: #3498db;
+    margin-right: 8px;
+}
+
+/* 導航連結 */
+.nav-link {
+    font-weight: 500;
+    color: #bdc3c7 !important;
+    transition: all 0.3s ease;
+    padding: 10px 15px !important;
+    border-radius: 5px;
+    margin: 0 2px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #3498db !important;
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+/* 下拉選單 */
+.dropdown-menu {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    padding: 10px 0;
+    margin-top: 5px;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    margin: 2px 10px;
+}
+
+.dropdown-item:hover {
+    background-color: #3498db;
+    color: white;
+    transform: translateX(5px);
+}
+
+/* =============================================
+   頁面標題樣式
+   ============================================= */
+
+/* 頁面標題區域 */
+.mb-0 {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.mb-0 i {
+    color: #3498db;
+    margin-right: 12px;
+}
+
+.text-muted {
+    color: #7f8c8d !important;
+    font-size: 1.1rem;
+}
+
+/* 操作按鈕區域 */
+.text-end .btn {
+    margin-left: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.text-end .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    border: none;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    border: none;
+}
+
+/* =============================================
+   搜索和篩選區域樣式
+   ============================================= */
+
+/* 搜索卡片 */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+/* 搜索輸入框 */
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* 搜索按鈕 */
+.btn-outline-primary {
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-weight: 600;
+    border-width: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* 篩選下拉選單 */
+.form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* 批量操作按鈕 */
+.btn-group .btn {
+    border-radius: 8px;
+    margin: 0 2px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-group .btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+/* =============================================
+   商品表格樣式
+   ============================================= */
+
+/* 表格卡片 */
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 20px 25px;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+/* 表格樣式 */
+.table {
+    margin: 0;
+    background: white;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border: none;
+    font-weight: 600;
+    color: #2c3e50;
+    padding: 15px 12px;
+    vertical-align: middle;
+}
+
+.table tbody td {
+    border: none;
+    padding: 15px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f2f6;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+    transition: all 0.3s ease;
+}
+
+/* 表格圖片 */
+.img-thumbnail {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.img-thumbnail:hover {
+    border-color: #3498db;
+    transform: scale(1.1);
+}
+
+/* 表格文字 */
+.fw-bold {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.text-muted {
+    color: #6c757d !important;
+    font-size: 0.9rem;
+}
+
+/* 表格徽章 */
+.badge {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge.bg-primary {
+    background-color: #3498db !important;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+/* 表格按鈕組 */
+.btn-group-sm .btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-group-sm .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-primary:hover {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-outline-info:hover {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* =============================================
+   載入指示器樣式
+   ============================================= */
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3em;
+    color: #3498db;
+}
+
+.py-5 p {
+    margin-top: 15px;
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* =============================================
+   無商品訊息樣式
+   ============================================= */
+
+#noProductsMessage {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+#noProductsMessage i {
+    color: #dee2e6;
+    margin-bottom: 20px;
+}
+
+#noProductsMessage h4 {
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+
+#noProductsMessage p {
+    color: #adb5bd;
+    font-size: 1.1rem;
+}
+
+/* =============================================
+   分頁樣式
+   ============================================= */
+
+.card-footer {
+    background-color: #f8f9fa;
+    border: none;
+    padding: 20px 25px;
+}
+
+.pagination {
+    margin: 0;
+}
+
+.page-link {
+    border: none;
+    color: #3498db;
+    padding: 10px 15px;
+    margin: 0 2px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.page-link:hover {
+    background-color: #3498db;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.page-item.active .page-link {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #f8f9fa;
+}
+
+/* =============================================
+   模態框樣式
+   ============================================= */
+
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 20px 25px;
+}
+
+.modal-title {
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.btn-close {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    padding: 30px;
+    background-color: #f8f9fa;
+}
+
+.modal-footer {
+    border: none;
+    padding: 20px 25px;
+    background-color: white;
+}
+
+/* 表單樣式 */
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.form-control,
+.form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* 圖片上傳區域 */
+.form-control[type="file"] {
+    padding: 8px 12px;
+}
+
+/* 圖片預覽 */
+#imagePreview {
+    margin-top: 15px;
+}
+
+#imagePreview img {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 額外圖片預覽 */
+#additionalImagesPreview .col-md-4 {
+    margin-bottom: 15px;
+}
+
+#additionalImagesPreview img {
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+#additionalImagesPreview img:hover {
+    transform: scale(1.05);
+}
+
+/* 表單按鈕 */
+.modal-footer .btn {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modal-footer .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* =============================================
+   刪除確認模態框樣式
+   ============================================= */
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    color: #856404;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.alert-warning strong {
+    color: #d63031;
+}
+
+/* =============================================
+   響應式設計
+   ============================================= */
+
+/* 平板設備 */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 0 15px;
+    }
+    
+    .mb-0 {
+        font-size: 1.5rem;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+    
+    .modal-dialog {
+        margin: 10px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+}
+
+/* 手機設備 */
+@media (max-width: 576px) {
+    .container-fluid {
+        padding: 0 10px;
+    }
+    
+    .mb-0 {
+        font-size: 1.3rem;
+    }
+    
+    .text-end {
+        text-align: left !important;
+        margin-top: 15px;
+    }
+    
+    .text-end .btn {
+        margin: 5px 5px 5px 0;
+        width: 100%;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .table thead th,
+    .table tbody td {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 3px 6px;
+        font-size: 0.75rem;
+        margin: 1px;
+    }
+    
+    .modal-dialog {
+        margin: 5px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+    }
+    
+    .form-control,
+    .form-select {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+/* =============================================
+   動畫效果
+   ============================================= */
+
+/* 淡入動畫 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card,
+.table tbody tr {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* 載入動畫 */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.spinner-border {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 按鈕懸停動畫 */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* =============================================
+   自定義滾動條
+   ============================================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3498db;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2980b9;
+}
+
+/* =============================================
+   工具提示樣式
+   ============================================= */
+
+[title] {
+    cursor: help;
+}
+
+/* =============================================
+   列印樣式
+   ============================================= */
+
+@media print {
+    .navbar,
+    .btn,
+    .pagination,
+    .card-footer {
+        display: none !important;
+    }
+    
+    .container-fluid {
+        padding: 0 !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+    
+    .table {
+        font-size: 0.9rem;
+    }
+}
+
+

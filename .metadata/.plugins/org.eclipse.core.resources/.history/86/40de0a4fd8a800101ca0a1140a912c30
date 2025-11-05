@@ -1,0 +1,63 @@
+package com.example.demo.dao.impl;
+
+import com.example.demo.dao.UserDAO;
+import com.example.demo.model.Products;
+import com.example.demo.model.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class ProductsDAOImpl implements ProductsDAO {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
+
+    @Override
+    public List<Products> findAll() {
+        return getCurrentSession().createQuery("FROM Products", Products.class).list();
+    }
+
+    @Override
+    public User findById(int prod_num) {
+        return getCurrentSession().get(products.class, id);
+    }
+
+    @Override
+    public void save(Products products) {
+        getCurrentSession().saveOrUpdate(products);
+    }
+
+    @Override
+    public void delete(int prod_num) {
+        User products = getCurrentSession().get(products.class, id);
+        if (products != null) {
+            getCurrentSession().delete(products);
+        }
+    }
+
+
+	@Override
+	public User findById(int prod_num) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void save(Products products) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(int prod_num) {
+		// TODO Auto-generated method stub
+		
+	}}

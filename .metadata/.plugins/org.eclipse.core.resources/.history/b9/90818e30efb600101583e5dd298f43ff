@@ -1,0 +1,32 @@
+package com.example.demo.service;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.model.Cart;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public interface CartItemService {
+    
+    List<Cart> getAllCart();
+    
+    Cart getCartById(Long id);
+    
+    void saveCart(Cart cart);
+    
+    void updateCart(Long id, Cart updatedCart);
+    
+    void deleteCart(Long id);
+    
+    Cart getCartByCustomer(Customer customer);
+    void addProductToCart(Customer customer, Product product);
+    List<CartItem> getAllCartItems();
+
+
+
+
+}

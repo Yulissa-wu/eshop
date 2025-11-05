@@ -1,0 +1,65 @@
+.wrap {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+.top-header,
+.top-footer {
+  background: orange;
+  text-align: center;
+  line-height: 100px;
+}
+
+.top-body {
+  background: pink;
+  text-align: center;
+  line-height: 300px;
+}
+
+/* 主要商品容器 */
+.container {
+  display: flex;
+  flex-wrap: wrap;   /* 允許換行 */
+  justify-content: center; /* 水平置中 */
+  gap: 20px;         /* item 間距 */
+  padding: 30px;
+  background: #4CAF50;
+}
+
+/* 每個商品區塊 */
+.item {
+  width: calc((100% - 80px) / 3); /* 每行3個 (考慮gap) */
+  background-color: #fff;
+  color: #333;
+  text-align: center;
+  padding: 15px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition: transform 0.2s ease;
+}
+
+.item:hover {
+  transform: scale(1.03);
+}
+
+/* 商品圖片 */
+.item img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 8px;  /* ✅ 圖片和文字靠近 */
+}
+
+/* 連結文字 */
+.item a {
+  display: inline-block;
+  margin-top: 2px;     /* ✅ 幾乎貼齊圖片 */
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.item a:hover {
+  text-decoration: underline;
+}

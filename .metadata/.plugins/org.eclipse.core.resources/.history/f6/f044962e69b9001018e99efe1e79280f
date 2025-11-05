@@ -1,0 +1,80 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.User;
+import com.example.demo.service.LoginService;
+import com.example.demo.service.UserService;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/auth")
+public class LoginController {
+    
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private LoginService loginService;
+    
+    @GetMapping("/login")
+    public String showLoginForm() {
+        return "login";
+    }
+    @PostMapping("/login")
+    public String login(@RequestParam("email") String email,
+                        @RequestParam("password") String password,
+                        HttpSession session) {
+
+        User user = loginService.login(email, password); // 這裡 login 回傳 User 物件
+        if (user != null) {
+            // 紀錄 session
+            session.setAttribute("currentUser", user);
+            return "redirect:/products/home"; // 登入成功跳轉
+        } else {
+            // 登入失敗，回到登入頁面，可加錯誤訊息
+            return "redirect:/auth/login?error=true";
+        }
+    }
+//    @GetMapping("/register")
+//    public String listProduct1(Model model) {
+//        model.addAttribute("products");
+//        return "register";
+//    }
+ 
+    // 顯示註冊頁面
+    @GetMapping("/register")
+    public String showRegisterForm(Model model) {
+        model.addAttribute("user", new User());
+        return "register"; // 對應 register.html
+    }
+
+    // 接收註冊表單
+    @PostMapping("/register")
+    public String processRegister(@ModelAttribute("user") User user, Model model) {
+
+        // ✅ 檢查 Email 是否重複
+        User existingUser = loginService.findByEmail(user.getEmail());
+        if (existingUser != null) {
+            model.addAttribute("error", "此 Email 已被註冊！");
+            return "register"; // 回到註冊頁面並顯示錯誤
+        }
+
+        // ✅ 儲存新使用者（寫入資料庫）
+        loginService.save(user);
+
+        // ✅ 註冊成功導向登入頁（並可顯示提示）
+        return "redirect:/auth/login";
+    }
+    
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // 清除 session
+        return "redirect:/products/home"; // 回首頁
+    }
+    
+   
+}

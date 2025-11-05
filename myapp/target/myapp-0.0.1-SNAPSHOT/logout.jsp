@@ -1,0 +1,5 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%
+    session.invalidate(); // 銷毀 Session
+    response.sendRedirect("login2.jsp");
+%>

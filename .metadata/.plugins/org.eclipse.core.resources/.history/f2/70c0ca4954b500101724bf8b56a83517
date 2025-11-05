@@ -1,0 +1,81 @@
+package com.example.demo.dao.impl;
+
+import com.example.demo.dao.UserDAO;
+import com.example.demo.model.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class CategoryDAOImpl implements UserDAO {
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
+
+//    @Override
+//    public List<User> findAll() {
+//        return getCurrentSession().createQuery("FROM User", User.class).list();
+//    }
+
+    @Override
+    public User findById(Long id) {
+        return getCurrentSession().get(User.class, id);
+    }
+
+//    @Override
+//    public void save(User user) {
+//        getCurrentSession().saveOrUpdate(user);
+//    }
+
+    @Override
+    public void delete(Long id) {
+        User user = getCurrentSession().get(User.class, id);
+        if (user != null) {
+            getCurrentSession().delete(user);
+        }
+    }
+    @Override
+    public User findByUsernameAndPassword(String email, String password) {
+        List<User> users = findAll(); // 先抓全部
+        for (User u : users) {
+            if (u.getEmail().equals(email) && u.getPassword().equals(password)) {
+                return u; // 找到就回傳
+            }
+        }
+        return null; // 找不到回傳 null
+    }
+    // ✅ 查找 Email 是否重複
+    
+    @Override
+    public User findByEmail(String email) {
+        List<User> users = findAll(); // 撈全部使用者
+        for (User u : users) {
+            if (u.getEmail().equals(email)) {
+                System.out.println("⚠️ 此 Email 已被註冊！");
+                return u;
+            }
+        }
+        System.out.println("✅ 此 Email 可使用");
+        return null;
+    }
+
+    // ✅ 查詢所有使用者
+    @Override
+    public List<User> findAll() {
+        return getCurrentSession().createQuery("FROM User", User.class).list();
+    }
+
+    // ✅ 寫入資料庫（註冊）
+    @Override
+    public void save(User user) {
+        getCurrentSession().saveOrUpdate(user); // Hibernate 自動處理 insert/update
+        System.out.println("✅ 成功新增使用者：" + user.getEmail());
+    }
+}

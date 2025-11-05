@@ -1,0 +1,16 @@
+body {
+    background-color: blue;
+
+}
+
+.loginForm{
+    display: flex;
+    flex-direction: column;   /* 讓內容垂直排列 */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: blue;
+    color: white;
+    text-align: center;
+    padding: 20px;s
+}

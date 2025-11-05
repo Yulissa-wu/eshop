@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品列表</title>
+    <!-- 引入外部CSS -->
+    <link rel="stylesheet" href="/resources/css/products.css">
+</head>
+<body>
+    <!-- LOG: 開始商品列表頁 -->
+    <h1>商品列表</h1>
+
+    <!-- 新增商品按鈕 -->
+    <a href="/products/add" class="btn-add">新增商品</a>
+
+    <!-- 商品表格 -->
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>商品名稱</th>
+                <th>價格</th>
+                <th>庫存</th>
+                <th>分類</th>
+                <th>圖片</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 使用 Thymeleaf 迴圈顯示商品 -->
+            <tr th:each="product : ${products}">
+                <td th:text="${product.productId}">1</td>
+                <td th:text="${product.productName}">商品名稱</td>
+                <td th:text="${product.price}">999.99</td>
+                <td th:text="${product.stockQuantity}">50</td>
+                <td th:text="${product.category}">分類</td>
+                <td>
+                    <img th:src="${product.imageUrl}" alt="商品圖片" width="80">
+                </td>
+                <td>
+                    <!-- LOG: 操作按鈕 -->
+                    <a th:href="@{/products/{id}(id=${product.productId})}" class="btn-view">查看</a>
+                    <a th:href="@{/products/edit/{id}(id=${product.productId})}" class="btn-edit">編輯</a>
+                    <a th:href="@{/products/delete/{id}(id=${product.productId})}" class="btn-delete" onclick="return confirm('確定要刪除嗎？');">刪除</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 引入外部JS -->
+    <script src="/resources/js/products.js"></script>
+</body>
+</html>

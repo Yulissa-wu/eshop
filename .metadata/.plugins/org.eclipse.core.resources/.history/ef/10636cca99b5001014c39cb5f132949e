@@ -1,0 +1,88 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Cart;
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Product;
+import com.example.demo.service.CartService;
+import com.example.demo.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private ProductService productService;
+
+    // 假設目前使用固定的 cart id=1（之後可改為登入使用者）
+    private final Long CART_ID = 1L;
+
+    @GetMapping
+    public String viewCart(Model model) {
+        Cart cart = cartService.getCart(CART_ID);
+        List<CartItem> items = cartService.getItems(cart);
+        BigDecimal total = cartService.calculateTotal(cart);
+
+        model.addAttribute("cart", cart);
+        model.addAttribute("items", items);
+        model.addAttribute("total", total);
+        return "cart";
+    }
+
+    @PostMapping("/add/{productId}")
+    public String addToCart(@PathVariable Long productId,
+                            @RequestParam(defaultValue = "1") BigDecimal quantity) {
+        Product product = productService.getProductById(productId);
+        Cart cart = cartService.getCart(CART_ID);
+
+        if (product != null && cart != null) {
+            cartService.addItem(cart, product, quantity);
+        }
+        return "redirect:/cart";
+    }
+
+    @PostMapping("/update/{itemId}")
+    public String updateItem(@PathVariable Long itemId,
+                             @RequestParam BigDecimal quantity) {
+        cartService.updateQuantity(itemId, quantity);
+        return "redirect:/cart";
+    }
+
+    @GetMapping("/remove/{itemId}")
+    public String removeItem(@PathVariable Long itemId) {
+        cartService.removeItem(itemId);
+        return "redirect:/cart";
+    }
+
+    @GetMapping("/checkout")
+    public String checkout(HttpSession session, Model model) {
+        // 假設登入時已把客戶物件放在 session 裡
+        Customer customer = (Customer) session.getAttribute("loggedInCustomer");
+        if (customer == null) {
+            model.addAttribute("message", "請先登入再結帳！");
+            return "cart";
+        }
+
+        Cart cart = cartService.getCartByCustomer(customer);
+        if (cart == null) {
+            model.addAttribute("message", "找不到購物車！");
+            return "cart";
+        }
+
+        BigDecimal total = cartService.calculateTotal(cart);
+        cartService.clearCart(cart);
+
+        model.addAttribute("message", "結帳成功！總金額：" + total);
+        return "cart";
+    }

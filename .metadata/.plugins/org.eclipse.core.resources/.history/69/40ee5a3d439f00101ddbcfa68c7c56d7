@@ -1,0 +1,18 @@
+body {
+    margin: 0;           /* 移除預設邊距 */
+    height: 100vh;       /* 佔滿視窗高度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: blue;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}

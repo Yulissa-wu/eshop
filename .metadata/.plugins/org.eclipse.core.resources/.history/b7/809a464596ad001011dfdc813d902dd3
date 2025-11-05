@@ -1,0 +1,42 @@
+.wrap{
+	width: 100%;
+	height: 100vh;
+	margin: 0 auto;  
+}
+.top-header,.top-footer{
+	background: orange;
+	text-align:center;
+	line-height:50px;
+}
+.top-header a {
+	float: left; 
+	margin-right: 10px;
+}
+.top-body{
+	background:pink;
+	text-align:center;
+
+}
+.container {
+  display: flex;
+  flex-wrap: wrap; /* 允許換行 */
+  gap: 10px;       /* item 間距 */
+  padding: 30px;
+}
+
+.item {
+  width: calc((100% - 20px) / 3); /* 每行 3 個，減去間距 */
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box; /* 包含 padding 在寬度內 */
+
+
+}
+.item a {
+    display: block;   /* 讓超連結獨占一行 */
+    margin-top: 15px;  /* 圖片和文字的距離 */
+    text-decoration: none;
+    color: #007bff;
+}

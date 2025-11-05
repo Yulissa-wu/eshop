@@ -1,0 +1,83 @@
+package com.example.eshop.controller;
+
+import com.example.eshop.model.CartItem;
+import com.example.eshop.model.Product;
+import com.example.eshop.service.ProductService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+@RequestMapping("/cart")
+public class CartController {
+
+    @Autowired
+    private ProductService productService;
+
+    // 顯示購物車頁面
+    @GetMapping
+    public String showCart(HttpSession session, Model model) {
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart == null) cart = new ArrayList<>();
+
+        double total = cart.stream().mapToDouble(CartItem::getSubtotal).sum();
+        model.addAttribute("cart", cart);
+        model.addAttribute("total", total);
+        return "cart"; // 導向 cart.html
+    }
+
+    // 加入購物車
+    @PostMapping("/add/{id}")
+    public String addToCart(@PathVariable("id") int id, HttpSession session) {
+        Product product = productService.findById(id);
+        if (product == null) {
+            return "redirect:/products";
+        }
+
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart == null) cart = new ArrayList<>();
+
+        CartItem existing = cart.stream()
+                .filter(item -> item.getProductId() == id)
+                .findFirst()
+                .orElse(null);
+
+        if (existing != null) {
+            existing.setQuantity(existing.getQuantity() + 1);
+        } else {
+            cart.add(new CartItem(
+                    product.getId(),
+                    product.getProd_name(),
+                    product.getProd_price(),
+                    product.getImage(),
+                    1
+            ));
+        }
+
+        session.setAttribute("cart", cart);
+        return "redirect:/cart"; // 加完後回購物車頁
+    }
+
+    // 移除商品
+    @GetMapping("/remove/{id}")
+    public String removeFromCart(@PathVariable("id") int id, HttpSession session) {
+        List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
+        if (cart != null) {
+            cart.removeIf(item -> item.getProductId() == id);
+            session.setAttribute("cart", cart);
+        }
+        return "redirect:/cart";
+    }
+
+    // 清空購物車
+    @GetMapping("/clear")
+    public String clearCart(HttpSession session) {
+        session.removeAttribute("cart");
+        return "redirect:/cart";
+    }
+}

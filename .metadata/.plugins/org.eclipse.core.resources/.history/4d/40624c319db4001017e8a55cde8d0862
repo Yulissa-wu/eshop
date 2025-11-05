@@ -1,0 +1,21 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.dao.UserDAO;
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+@Service
+@Transactional
+public class LoginServiceImpl implements LoginService {
+
+    @Autowired
+    private UserDAO userRepository;
+
+    @Override
+    User login(String username, String password) { 
+    	return userDAO.findByUsernameAndPassword(username, password);
+    }

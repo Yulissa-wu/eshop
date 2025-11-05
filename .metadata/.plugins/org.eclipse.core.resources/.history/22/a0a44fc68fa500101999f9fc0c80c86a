@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>商品列表</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>商品列表</h1>
+
+  <!-- 分類篩選 -->
+  <div class="filter">
+    <label>分類：
+      <select id="categoryFilter">
+        <option value="all">全部</option>
+        <option value="wearable">可穿戴設備</option>
+        <option value="audio">音訊設備</option>
+        <option value="watch">智慧手錶</option>
+      </select>
+    </label>
+  </div>
+
+  <!-- 商品列表容器 -->
+  <div class="product-list" id="productList"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>

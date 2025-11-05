@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<!-- =============================================
+     用戶註冊登錄頁面
+     創建時間: 2024
+     功能: 客戶註冊、登錄、密碼驗證
+     ============================================= -->
+<html lang="zh-TW" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 頁面基本設定 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用戶認證 - EShop 系統</title>
+    
+    <!-- 引入 CSS 樣式 -->
+    <link rel="stylesheet" th:href="@{/resources/css/style.css}">
+    <link rel="stylesheet" th:href="@{/resources/css/auth.css}">
+    
+    <!-- 引入 Bootstrap 框架 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <!-- =============================================
+         頁面導航欄
+         ============================================= -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <!-- 網站標題 -->
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-store text-primary"></i> EShop 系統
+            </a>
+            
+            <!-- 導航選單 -->
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/products/home">
+                    <i class="fas fa-home"></i> 返回首頁
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- =============================================
+         主要內容區域
+         ============================================= -->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <!-- 認證卡片容器 -->
+                <div class="auth-card">
+                    <!-- 標題區域 -->
+                    <div class="text-center mb-4">
+                        <h2 class="auth-title">
+                            <i class="fas fa-user-circle text-primary"></i>
+                            <span id="authTitle">用戶登錄</span>
+                        </h2>
+                        <p class="text-muted" id="authSubtitle">請輸入您的帳戶資訊</p>
+                    </div>
+
+                    <!-- 切換按鈕 -->
+                    <div class="auth-tabs mb-4">
+                        <div class="btn-group w-100" role="group">
+                            <button type="button" class="btn btn-outline-primary active" id="loginTab">
+                                <i class="fas fa-sign-in-alt"></i> 登錄
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" id="registerTab">
+                                <i class="fas fa-user-plus"></i> 註冊
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 登錄表單 -->
+                    <form id="loginForm" class="auth-form">
+                        <div class="mb-3">
+                            <label for="loginId" class="form-label">
+                                <i class="fas fa-user"></i> 用戶名稱或電子郵件
+                            </label>
+                            <input type="text" class="form-control" id="loginId" name="loginId" required>
+                            <div class="invalid-feedback" id="loginIdError"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">
+                                <i class="fas fa-lock"></i> 密碼
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="loginPassword" name="password" required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleLoginPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback" id="loginPasswordError"></div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                記住我
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg" id="loginBtn">
+                                <i class="fas fa-sign-in-alt"></i> 登錄
+                            </button>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="#" class="text-decoration-none" id="forgotPasswordLink">
+                                忘記密碼？
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- 註冊表單 -->
+                    <form id="registerForm" class="auth-form" style="display: none;">
+                        <div class="mb-3">
+                            <label for="registerName" class="form-label">
+                                <i class="fas fa-user"></i> 客戶名稱 *
+                            </label>
+                            <input type="text" class="form-control" id="registerName" name="cust_name" required>
+                            <div class="form-text">請輸入您的真實姓名</div>
+                            <div class="invalid-feedback" id="registerNameError"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">
+                                <i class="fas fa-envelope"></i> 電子郵件 *
+                            </label>
+                            <input type="email" class="form-control" id="registerEmail" name="email" required>
+                            <div class="form-text">請輸入有效的電子郵件地址</div>
+                            <div class="invalid-feedback" id="registerEmailError"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">
+                                <i class="fas fa-lock"></i> 密碼 *
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="registerPassword" name="password" required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleRegisterPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                密碼必須包含：大寫字母、小寫字母、數字和特殊符號，至少8位
+                            </div>
+                            <div class="invalid-feedback" id="registerPasswordError"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">
+                                <i class="fas fa-lock"></i> 確認密碼 *
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback" id="confirmPasswordError"></div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="registerPhone" class="form-label">
+                                <i class="fas fa-phone"></i> 電話號碼
+                            </label>
+                            <input type="tel" class="form-control" id="registerPhone" name="phone">
+                            <div class="form-text">請輸入您的聯絡電話</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="registerAddress" class="form-label">
+                                <i class="fas fa-map-marker-alt"></i> 地址
+                            </label>
+                            <textarea class="form-control" id="registerAddress" name="address" rows="3"></textarea>
+                            <div class="form-text">請輸入您的收貨地址</div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                我同意 <a href="#" class="text-decoration-none">服務條款</a> 和 <a href="#" class="text-decoration-none">隱私政策</a>
+                            </label>
+                            <div class="invalid-feedback" id="agreeTermsError"></div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg" id="registerBtn">
+                                <i class="fas fa-user-plus"></i> 註冊
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- 密碼強度指示器 -->
+                    <div id="passwordStrengthIndicator" class="mt-3" style="display: none;">
+                        <div class="progress" style="height: 5px;">
+                            <div class="progress-bar" id="passwordStrengthBar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted" id="passwordStrengthText">密碼強度</small>
+                    </div>
+
+                    <!-- 錯誤訊息區域 -->
+                    <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="errorText"></span>
+                    </div>
+
+                    <!-- 成功訊息區域 -->
+                    <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
+                        <i class="fas fa-check-circle"></i>
+                        <span id="successText"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================
+         頁腳
+         ============================================= -->
+    <footer class="bg-light text-center py-4 mt-5">
+        <div class="container">
+            <p class="text-muted mb-0">&copy; 2024 EShop 系統. 版權所有.</p>
+        </div>
+    </footer>
+
+    <!-- =============================================
+         JavaScript 引入
+         ============================================= -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 用戶認證 JavaScript -->
+    <script>
+        // =============================================
+        // 用戶認證頁面 JavaScript
+        // =============================================
+        
+        // 全域變數
+        let currentForm = 'login'; // 'login' 或 'register'
+        let isPasswordVisible = {
+            login: false,
+            register: false,
+            confirm: false
+        };
+        
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('用戶認證頁面載入完成');
+            
+            // 初始化事件監聽器
+            initializeEventListeners();
+            
+            // 初始化表單驗證
+            initializeFormValidation();
+        });
+        
+        // =============================================
+        // 事件監聽器初始化
+        // =============================================
+        function initializeEventListeners() {
+            console.log('初始化事件監聽器');
+            
+            // 切換表單事件
+            document.getElementById('loginTab').addEventListener('click', function() {
+                console.log('切換到登錄表單');
+                switchToLogin();
+            });
+            
+            document.getElementById('registerTab').addEventListener('click', function() {
+                console.log('切換到註冊表單');
+                switchToRegister();
+            });
+            
+            // 表單提交事件
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('登錄表單提交');
+                handleLogin();
+            });
+            
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                console.log('註冊表單提交');
+                handleRegister();
+            });
+            
+            // 密碼顯示切換事件
+            document.getElementById('toggleLoginPassword').addEventListener('click', function() {
+                togglePasswordVisibility('login');
+            });
+            
+            document.getElementById('toggleRegisterPassword').addEventListener('click', function() {
+                togglePasswordVisibility('register');
+            });
+            
+            document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+                togglePasswordVisibility('confirm');
+            });
+            
+            // 密碼強度檢查事件
+            document.getElementById('registerPassword').addEventListener('input', function() {
+                checkPasswordStrength(this.value);
+            });
+            
+            // 確認密碼檢查事件
+            document.getElementById('confirmPassword').addEventListener('input', function() {
+                validatePasswordMatch();
+            });
+        }
+        
+        // =============================================
+        // 表單切換功能
+        // =============================================
+        function switchToLogin() {
+            console.log('切換到登錄表單');
+            
+            currentForm = 'login';
+            
+            // 更新按鈕狀態
+            document.getElementById('loginTab').classList.add('active');
+            document.getElementById('registerTab').classList.remove('active');
+            
+            // 切換表單顯示
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            
+            // 更新標題
+            document.getElementById('authTitle').textContent = '用戶登錄';
+            document.getElementById('authSubtitle').textContent = '請輸入您的帳戶資訊';
+            
+            // 隱藏訊息
+            hideMessages();
+        }
+        
+        function switchToRegister() {
+            console.log('切換到註冊表單');
+            
+            currentForm = 'register';
+            
+            // 更新按鈕狀態
+            document.getElementById('loginTab').classList.remove('active');
+            document.getElementById('registerTab').classList.add('active');
+            
+            // 切換表單顯示
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            
+            // 更新標題
+            document.getElementById('authTitle').textContent = '用戶註冊';
+            document.getElementById('authSubtitle').textContent = '請填寫註冊資訊';
+            
+            // 隱藏訊息
+            hideMessages();
+        }
+        
+        // =============================================
+        // 登錄處理
+        // =============================================
+        function handleLogin() {
+            console.log('處理登錄請求');
+            
+            // 獲取表單資料
+            const loginId = document.getElementById('loginId').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // 驗證輸入
+            if (!validateLoginInput(loginId, password)) {
+                return;
+            }
+            
+            // 顯示載入狀態
+            const loginBtn = document.getElementById('loginBtn');
+            const originalText = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登錄中...';
+            loginBtn.disabled = true;
+            
+            // 發送登錄請求
+            const loginData = {
+                loginId: loginId,
+                password: password,
+                rememberMe: rememberMe
+            };
+            
+            fetch('/echop/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('登錄成功');
+                    showSuccessMessage('登錄成功！正在跳轉...');
+                    
+                    // 儲存用戶資訊到 localStorage
+                    localStorage.setItem('user', JSON.stringify({
+                        id: data.id,
+                        cust_num: data.cust_num,
+                        cust_name: data.cust_name,
+                        email: data.email
+                    }));
+                    
+                    // 跳轉到首頁
+                    setTimeout(() => {
+                        window.location.href = '/echop/';
+                    }, 1500);
+                } else {
+                    console.log('登錄失敗:', data.message);
+                    showErrorMessage(data.message || '登錄失敗');
+                }
+            })
+            .catch(error => {
+                console.error('登錄請求失敗:', error);
+                showErrorMessage('登錄時發生錯誤，請稍後再試');
+            })
+            .finally(() => {
+                // 恢復按鈕狀態
+                loginBtn.innerHTML = originalText;
+                loginBtn.disabled = false;
+            });
+        }
+        
+        // =============================================
+        // 註冊處理
+        // =============================================
+        function handleRegister() {
+            console.log('處理註冊請求');
+            
+            // 獲取表單資料
+            const registerData = {
+                cust_name: document.getElementById('registerName').value.trim(),
+                email: document.getElementById('registerEmail').value.trim(),
+                password: document.getElementById('registerPassword').value,
+                phone: document.getElementById('registerPhone').value.trim(),
+                address: document.getElementById('registerAddress').value.trim()
+            };
+            
+            // 驗證輸入
+            if (!validateRegisterInput(registerData)) {
+                return;
+            }
+            
+            // 顯示載入狀態
+            const registerBtn = document.getElementById('registerBtn');
+            const originalText = registerBtn.innerHTML;
+            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 註冊中...';
+            registerBtn.disabled = true;
+            
+            // 發送註冊請求
+            fetch('/echop/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(registerData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('註冊成功');
+                    showSuccessMessage('註冊成功！請使用新帳戶登錄');
+                    
+                    // 清空註冊表單
+                    document.getElementById('registerForm').reset();
+                    
+                    // 切換到登錄表單
+                    setTimeout(() => {
+                        switchToLogin();
+                    }, 2000);
+                } else {
+                    console.log('註冊失敗:', data.message);
+                    showErrorMessage(data.message || '註冊失敗');
+                }
+            })
+            .catch(error => {
+                console.error('註冊請求失敗:', error);
+                showErrorMessage('註冊時發生錯誤，請稍後再試');
+            })
+            .finally(() => {
+                // 恢復按鈕狀態
+                registerBtn.innerHTML = originalText;
+                registerBtn.disabled = false;
+            });
+        }
+        
+        // =============================================
+        // 表單驗證
+        // =============================================
+        function validateLoginInput(loginId, password) {
+            let isValid = true;
+            
+            // 驗證登錄ID
+            if (!loginId) {
+                showFieldError('loginId', '請輸入用戶名稱或電子郵件');
+                isValid = false;
+            } else {
+                clearFieldError('loginId');
+            }
+            
+            // 驗證密碼
+            if (!password) {
+                showFieldError('loginPassword', '請輸入密碼');
+                isValid = false;
+            } else {
+                clearFieldError('loginPassword');
+            }
+            
+            return isValid;
+        }
+        
+        function validateRegisterInput(data) {
+            let isValid = true;
+            
+            // 驗證客戶名稱
+            if (!data.cust_name) {
+                showFieldError('registerName', '請輸入客戶名稱');
+                isValid = false;
+            } else if (data.cust_name.length < 2) {
+                showFieldError('registerName', '客戶名稱至少需要2個字符');
+                isValid = false;
+            } else {
+                clearFieldError('registerName');
+            }
+            
+            // 驗證電子郵件
+            if (!data.email) {
+                showFieldError('registerEmail', '請輸入電子郵件');
+                isValid = false;
+            } else if (!isValidEmail(data.email)) {
+                showFieldError('registerEmail', '請輸入有效的電子郵件地址');
+                isValid = false;
+            } else {
+                clearFieldError('registerEmail');
+            }
+            
+            // 驗證密碼
+            if (!data.password) {
+                showFieldError('registerPassword', '請輸入密碼');
+                isValid = false;
+            } else if (!isValidPassword(data.password)) {
+                showFieldError('registerPassword', '密碼必須包含大寫字母、小寫字母、數字和特殊符號，至少8位');
+                isValid = false;
+            } else {
+                clearFieldError('registerPassword');
+            }
+            
+            // 驗證確認密碼
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (!confirmPassword) {
+                showFieldError('confirmPassword', '請確認密碼');
+                isValid = false;
+            } else if (data.password !== confirmPassword) {
+                showFieldError('confirmPassword', '密碼不一致');
+                isValid = false;
+            } else {
+                clearFieldError('confirmPassword');
+            }
+            
+            // 驗證服務條款
+            if (!document.getElementById('agreeTerms').checked) {
+                showFieldError('agreeTerms', '請同意服務條款和隱私政策');
+                isValid = false;
+            } else {
+                clearFieldError('agreeTerms');
+            }
+            
+            return isValid;
+        }
+        
+        // =============================================
+        // 密碼相關功能
+        // =============================================
+        function togglePasswordVisibility(type) {
+            console.log('切換密碼顯示:', type);
+            
+            let passwordField;
+            let toggleBtn;
+            
+            switch (type) {
+                case 'login':
+                    passwordField = document.getElementById('loginPassword');
+                    toggleBtn = document.getElementById('toggleLoginPassword');
+                    isPasswordVisible.login = !isPasswordVisible.login;
+                    break;
+                case 'register':
+                    passwordField = document.getElementById('registerPassword');
+                    toggleBtn = document.getElementById('toggleRegisterPassword');
+                    isPasswordVisible.register = !isPasswordVisible.register;
+                    break;
+                case 'confirm':
+                    passwordField = document.getElementById('confirmPassword');
+                    toggleBtn = document.getElementById('toggleConfirmPassword');
+                    isPasswordVisible.confirm = !isPasswordVisible.confirm;
+                    break;
+            }
+            
+            if (isPasswordVisible[type]) {
+                passwordField.type = 'text';
+                toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        }
+        
+        function checkPasswordStrength(password) {
+            console.log('檢查密碼強度');
+            
+            const indicator = document.getElementById('passwordStrengthIndicator');
+            const bar = document.getElementById('passwordStrengthBar');
+            const text = document.getElementById('passwordStrengthText');
+            
+            if (!password) {
+                indicator.style.display = 'none';
+                return;
+            }
+            
+            indicator.style.display = 'block';
+            
+            let strength = 0;
+            let strengthText = '';
+            let strengthColor = '';
+            
+            // 檢查密碼長度
+            if (password.length >= 8) strength += 20;
+            if (password.length >= 12) strength += 10;
+            
+            // 檢查字符類型
+            if (/[a-z]/.test(password)) strength += 20;
+            if (/[A-Z]/.test(password)) strength += 20;
+            if (/[0-9]/.test(password)) strength += 20;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 10;
+            
+            // 設定強度文字和顏色
+            if (strength < 40) {
+                strengthText = '密碼強度：弱';
+                strengthColor = 'bg-danger';
+            } else if (strength < 70) {
+                strengthText = '密碼強度：中等';
+                strengthColor = 'bg-warning';
+            } else {
+                strengthText = '密碼強度：強';
+                strengthColor = 'bg-success';
+            }
+            
+            // 更新UI
+            bar.style.width = strength + '%';
+            bar.className = 'progress-bar ' + strengthColor;
+            text.textContent = strengthText;
+        }
+        
+        function validatePasswordMatch() {
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                showFieldError('confirmPassword', '密碼不一致');
+            } else {
+                clearFieldError('confirmPassword');
+            }
+        }
+        
+        // =============================================
+        // 輔助函數
+        // =============================================
+        
+        // 驗證電子郵件格式
+        function isValidEmail(email) {
+            const emailPattern = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+            return emailPattern.test(email);
+        }
+        
+        // 驗證密碼強度
+        function isValidPassword(password) {
+            const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            return passwordPattern.test(password);
+        }
+        
+        // 顯示欄位錯誤
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.add('is-invalid');
+            if (errorElement) {
+                errorElement.textContent = message;
+            }
+        }
+        
+        // 清除欄位錯誤
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.remove('is-invalid');
+            if (errorElement) {
+                errorElement.textContent = '';
+            }
+        }
+        
+        // 顯示錯誤訊息
+        function showErrorMessage(message) {
+            console.error('錯誤訊息:', message);
+            
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            errorText.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // 隱藏成功訊息
+            document.getElementById('successMessage').style.display = 'none';
+            
+            // 3秒後自動隱藏
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // 顯示成功訊息
+        function showSuccessMessage(message) {
+            console.log('成功訊息:', message);
+            
+            const successDiv = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            
+            successText.textContent = message;
+            successDiv.style.display = 'block';
+            
+            // 隱藏錯誤訊息
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+        
+        // 隱藏所有訊息
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+        
+        // 初始化表單驗證
+        function initializeFormValidation() {
+            console.log('初始化表單驗證');
+            
+            // 清除所有欄位錯誤狀態
+            const fields = document.querySelectorAll('.form-control');
+            fields.forEach(field => {
+                field.classList.remove('is-invalid');
+            });
+        }
+    </script>
+</body>
+</html>

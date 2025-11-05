@@ -1,0 +1,29 @@
+<hibernate-configuration>
+    <session-factory>
+        <!-- 資料庫連線設定 -->
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/eshop</property>
+        <property name="hibernate.connection.username">wsq</property>
+        <property name="hibernate.connection.password">004328qwer</property>
+
+        <!-- SQL 方言，根據資料庫類型選擇 -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+
+        <!-- 顯示執行的 SQL 語句，方便除錯 -->
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- 自動建立或更新資料庫表格 -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- 映射檔案設定 -->
+        <mapping resource="com/example/Employee.hbm.xml"/>
+        <!-- 用Annotation方法，不用設定 Employee.hbm.xml
+        <mapping class="com.example.Employee"/>
+        -->
+
+    </session-factory>
+</hibernate-configuration>
+
+
+

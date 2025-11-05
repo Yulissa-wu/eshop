@@ -1,0 +1,78 @@
+1760326645462	Move 2 resources to 'views'
+1760326728767	Move files
+1760326733375	Move 2 resources to 'static'
+1760326763366	Move 2 resources to 'views'
+1760327622281	Copy file
+1760327639603	Delete element
+1760335393414	Delete element
+1760335402647	Delete element
+1760335414549	Delete element
+1760335422449	Delete element
+1760335435777	Delete element
+1760335446473	Delete element
+1760337155396	Delete element
+1760337163443	Delete element
+1760340257345	Delete element
+1760340719726	Delete element
+1760341256651	Rename resource 'product-list.jsp'
+1760341291251	Rename resource 'products.jsp'
+1760342097712	Copy compilation unit
+1760342204202	Delete element
+1760342232425	Copy compilation unit
+1760342315266	Copy compilation unit
+1760342372123	Rename resource 'product-detail.jsp'
+1760342564172	Copy file
+1760345020674	Delete element
+1760345027760	Delete element
+1760345041871	Delete element
+1760345051358	Delete element
+1760345070110	Delete element
+1760347038858	Copy compilation unit
+1760347811790	Copy compilation unit
+1760349145808	Rename compilation unit 'Order_Detail.java'
+1760350406882	Rename compilation unit 'Product.java'
+1760350535367	Copy compilation unit
+1760406065117	Rename type 'ProductDAO'
+1760409018308	Copy compilation unit
+1760409253280	Copy compilation unit
+1760422697018	Copy compilation unit
+1760429409253	Copy compilation unit
+1760430358307	Rename type 'ProductsDAO'
+1760430425704	Rename type 'Products'
+1760430575170	Rename type 'Orders'
+1760430612355	Rename type 'Customers'
+1760430688249	Rename type 'OrdersDAO'
+1760430711397	Rename type 'CustomersDAO'
+1760433075435	Rename compilation unit 'ProductsDAOImpl.java'
+1760433687831	Copy compilation unit
+1760509921326	Copy compilation unit
+1760509939825	Rename type 'CustomerDAOImpl2'
+1760511619490	Copy compilation unit
+1760512542392	Copy compilation unit
+1760512607478	Delete element
+1760512662091	Copy compilation unit
+1760512959427	Copy compilation unit
+1760513173290	Copy compilation unit
+1760513316820	Copy compilation unit
+1760513433655	Copy compilation unit
+1760513442631	Rename type 'ProductServiceImpl2'
+1760514273916	Copy compilation unit
+1760517511139	Copy compilation unit
+1760517546792	Rename type 'ServiceImpl'
+1760518731489	Copy compilation unit
+1760520306428	Copy compilation unit
+1760581681534	Move folder
+1760581727504	Delete element
+1760583621852	Copy compilation unit
+1760594125062	Delete element
+1760594730050	Move 'application.properties' to 'resources'
+1760595854986	Copy compilation unit
+1760596944558	Copy compilation unit
+1760599635637	Copy compilation unit
+1760608128366	Delete element
+1760608140826	Delete element
+1760608602822	Copy file
+1760608651852	Rename resource 'users2.html'
+1760669143440	Rename resource 'messages.properties'
+1760669961075	Rename resource 'messages_zh_TW'
+1760673154282	Rename resource 'Projduct.html'

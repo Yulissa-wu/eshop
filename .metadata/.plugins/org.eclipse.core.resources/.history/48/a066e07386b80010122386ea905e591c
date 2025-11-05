@@ -1,0 +1,42 @@
+package com.example.demo.service;
+
+import com.example.demo.model.CartItem;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Product;
+import com.example.demo.model.User;
+import com.example.demo.model.Cart;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public interface CartItemService {
+
+	List<CartItem> getAllCartItem();
+
+	CartItem getCartItemById(Long id);
+
+	void saveCartItem(Object cartItem);
+
+	void updateCartItem(Long id, CartItem updatedCartItem);
+
+	void deleteCartItem(Long id);
+
+	Cart getCartByCustomer(Customer customer);
+
+	void addProductToCart(Customer customer, Product product);
+
+	List<CartItem> getAllCartItems();
+
+	List<CartItem> getAllCartItemsByUser(Long userId);
+
+	List<CartItem> findByUser(User user);
+
+	List<CartItem> findByCart(Cart cart);
+
+
+    void saveCartItems(List<CartItem> cartItems);
+
+    void saveCartItem1(CartItem cartItem);
+
+
+}
